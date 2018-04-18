@@ -160,6 +160,7 @@ public class Maze extends Applet {
 				if (!spielFeld[x-1][y] && spielFeld[x-1][y-1]) {									// Schritt nach links
 					sol[x-1][y] = true;
 					rotCounter++;																	// Zählt die Rotationen
+					System.out.println(rotCounter);
 					update(x-1, y, spielFeld);
 					walk(x-1, y, 1);
 				} else if (!spielFeld[x][y+1] && (spielFeld[x-1][y+1] || spielFeld[x-1][y])) {		// Schritt nach unten
@@ -169,6 +170,7 @@ public class Maze extends Applet {
 				} else if (!spielFeld[x+1][y] && spielFeld[x][y+1]) {								// Schritt nach rechts
 					sol[x+1][y] = true;
 					rotCounter--;
+					System.out.println(rotCounter);
 					update(x+1, y, spielFeld);
 					walk(x+1,y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
@@ -177,6 +179,7 @@ public class Maze extends Applet {
 					} else {
 						rotCounter += 2;
 					}
+					System.out.println(rotCounter);
 					sol[x][y-1] = true;
 					update(x, y-1, spielFeld);
 					walk(x,y-1, 2);
@@ -186,6 +189,7 @@ public class Maze extends Applet {
 				if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1])) {									// Schritt nach oben
 					sol[x][y-1] = true;
 					rotCounter++;
+					System.out.println(rotCounter);
 					update(x, y-1, spielFeld);
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y+1] || spielFeld[x][y+1])) {		// Schritt nach links
@@ -195,15 +199,18 @@ public class Maze extends Applet {
 				} else if (!spielFeld[x][y+1] && spielFeld[x-1][y]) {								// Schritt nach unten
 					sol[x][y+1] = true;
 					rotCounter--;
+					System.out.println(rotCounter);
 					update(x, y+1, spielFeld);
 					walk(x,y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
 					sol[x+1][y] = true;
 					if (rotCounter >= 0) {
 						rotCounter -= 2;
+						
 					} else {
 						rotCounter += 2;
 					}
+					System.out.println(rotCounter);
 					update(x+1, y, spielFeld);
 					walk(x+1,y, 3);
 				}
@@ -212,6 +219,7 @@ public class Maze extends Applet {
 				if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {				// Schritt nach rechts
 					sol[x+1][y] = true;
 					rotCounter++;
+					System.out.println(rotCounter);
 					update(x+1, y, spielFeld);
 					walk(x+1, y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
@@ -221,6 +229,7 @@ public class Maze extends Applet {
 				} else if (!spielFeld[x-1][y] && spielFeld[x][y-1]) {								// Schritt nach links
 					sol[x-1][y] = true;
 					rotCounter--;
+					System.out.println(rotCounter);
 					update(x-1, y, spielFeld);
 					walk(x-1, y , 1);
 				} else if (!spielFeld[x][y+1] && (spielFeld[x-1][y] || spielFeld[x-1][y+1])) {		// Schritt nach unten
@@ -230,6 +239,7 @@ public class Maze extends Applet {
 					} else {
 						rotCounter += 2;
 					}
+					System.out.println(rotCounter);
 					update(x, y+1, spielFeld);
 					walk(x, y+1, 0);
 				}
@@ -238,6 +248,7 @@ public class Maze extends Applet {
 				if (!spielFeld[x][y+1] && spielFeld[x-1][y+1]) {									// Schritt nach unten
 					sol[x][y+1] = true;
 					rotCounter++;
+					System.out.println(rotCounter);
 					update(x, y+1, spielFeld);
 					walk(x, y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
@@ -247,6 +258,7 @@ public class Maze extends Applet {
 				} else if (!spielFeld[x][y-1] && spielFeld[x+1][y]) {								// Schritt nach oben
 					sol[x][y-1] = true;
 					rotCounter--;
+					System.out.println(rotCounter);
 					update(x, y-1, spielFeld);
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y-1] || spielFeld[x][y-1])) {		// Schritt nach links
@@ -256,6 +268,7 @@ public class Maze extends Applet {
 					} else {
 						rotCounter += 2;
 					}
+					System.out.println(rotCounter);
 					update(x-1, y, spielFeld);
 					walk(x-1, y, 1);
 				}
