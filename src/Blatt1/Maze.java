@@ -54,13 +54,13 @@ public class Maze extends Applet {
 
 	private JFrame myFrame = new JFrame("Spielfeld");
 	private JPanel pan = new JPanel();
-	private boolean[][] spielFeld;
+	private static boolean[][] spielFeld;
 	private int posx, posy;
-	private int width = 25;
-	private int height = 25;
-	private int rotCounter = 0;
+	private static int width;
+	private static int height;
+	private static int rotCounter = 0;
 
-	private boolean[][] sol = null;
+	private static boolean[][] sol = null;
 
 	public Maze () {
 	}
@@ -129,28 +129,44 @@ public class Maze extends Applet {
 		catch (InterruptedException ie) {
 		}
 	}
-
-	public void initialize() {
-		boolean[][] spielfeld = generateStandardMaze(width, height);
+	
+	public static void main (String[] args) {
+		while (true) {
+			String eingabe = JOptionPane.showInputDialog("Bitte Größe eingeben");
+			try {
+				width = Integer.parseInt(eingabe);
+				if (width <= 0) {
+					continue;
+				}
+				height = Integer.parseInt(eingabe);
+				break;
+			} catch (NumberFormatException e) {
+				System.out.println("Keine gültige Zahl, Eingabe wiederholen");
+			}
+		}
+		boolean[][] spielfeld = generateStandardMaze(width, width);
 		sol = new boolean[width][height];
 		spielFeld = spielfeld;
 		draw(1, 0, spielfeld, sol);
 		draw(1, 1, spielfeld, sol);
-		walk(1,0,0);
+		walk(1, 0, 0);
 	}
 	
-	public static void main (String[] args) {
-		boolean[][] spielfeld = generateStandardMaze(25, 25);
-		draw(1, 0, spielfeld, null);
-		draw(1, 1, spielfeld, null);
-	}
-	
-	public void walk(int x, int y, int direction) {
-		if (rotCounter == 4 || rotCounter == -4) {													// Zählt die Rotationen und ist bei einer Umdrehung = 4 Abbruchbedingung
-			System.out.println("Gefangen an einer Insel, Labyrinth kann nicht verlassen werden");
+	public static void walk(int x, int y, int direction) {
+		if (x == 1 && y == 0 && direction == 2) {
+			sol[1][0] = false;
+			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden");
+			return;
+		}
+		if (rotCounter == 4 && sol[x][y] == true) {													// Zählt die Rotationen und ist bei einer Umdrehung = 4 Abbruchbedingung
+			sol[1][0] = false;
+			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden");
 			return;
 		}
 		if (x == width-2 && y == height-2 && !spielFeld[x+1][y]) {
+			sol[1][0] = false;
+			sol[x][y] = true;
+			draw(x, y, spielFeld, sol);
 			System.out.println("Labyrinth kann verlassen werden");
 			return;
 		}
@@ -158,118 +174,89 @@ public class Maze extends Applet {
 		switch (direction) {
 			case 0:				// von oben
 				if (!spielFeld[x-1][y] && spielFeld[x-1][y-1]) {									// Schritt nach links
-					sol[x-1][y] = true;
+					sol[x][y] = true;
 					rotCounter++;																	// Zählt die Rotationen
-					System.out.println(rotCounter);
-					update(x-1, y, spielFeld);
+					draw(x-1, y, spielFeld, sol);
 					walk(x-1, y, 1);
 				} else if (!spielFeld[x][y+1] && (spielFeld[x-1][y+1] || spielFeld[x-1][y])) {		// Schritt nach unten
-					sol[x][y+1] = true;
-					update(x, y+1, spielFeld);
+					sol[x][y] = true;
+					draw(x, y+1, spielFeld, sol);;
 					walk(x,y+1, 0);
 				} else if (!spielFeld[x+1][y] && spielFeld[x][y+1]) {								// Schritt nach rechts
-					sol[x+1][y] = true;
+					sol[x][y] = true;
 					rotCounter--;
-					System.out.println(rotCounter);
-					update(x+1, y, spielFeld);
+					draw(x+1, y, spielFeld, sol);;
 					walk(x+1,y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
-					if (rotCounter >= 0) {
-						rotCounter -= 2;
-					} else {
-						rotCounter += 2;
-					}
-					System.out.println(rotCounter);
-					sol[x][y-1] = true;
-					update(x, y-1, spielFeld);
+					sol[x][y] = true;
+					rotCounter -= 2;
+					draw(x, y-1, spielFeld, sol);;
 					walk(x,y-1, 2);
 				}
 				break;
 			case 1:				// von rechts
 				if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1])) {									// Schritt nach oben
-					sol[x][y-1] = true;
+					sol[x][y] = true;
 					rotCounter++;
-					System.out.println(rotCounter);
-					update(x, y-1, spielFeld);
+					draw(x, y-1, spielFeld, sol);;
 					walk(x, y-1, 2);
-				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y+1] || spielFeld[x][y+1])) {		// Schritt nach links
-					sol[x-1][y] = true;
-					update(x-1, y, spielFeld);
+				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y+1] || spielFeld[x][y-1])) {		// Schritt nach links
+					sol[x][y] = true;
+					draw(x-1, y, spielFeld, sol);;
 					walk(x-1, y, 1);
 				} else if (!spielFeld[x][y+1] && spielFeld[x-1][y]) {								// Schritt nach unten
-					sol[x][y+1] = true;
+					sol[x][y] = true;
 					rotCounter--;
-					System.out.println(rotCounter);
-					update(x, y+1, spielFeld);
+					draw(x, y+1, spielFeld, sol);;
 					walk(x,y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
-					sol[x+1][y] = true;
-					if (rotCounter >= 0) {
-						rotCounter -= 2;
-						
-					} else {
-						rotCounter += 2;
-					}
-					System.out.println(rotCounter);
-					update(x+1, y, spielFeld);
+					sol[x][y] = true;
+					rotCounter -= 2;
+					draw(x+1, y, spielFeld, sol);;
 					walk(x+1,y, 3);
 				}
 				break;
 			case 2:				// von unten
 				if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {				// Schritt nach rechts
-					sol[x+1][y] = true;
+					sol[x][y] = true;
 					rotCounter++;
-					System.out.println(rotCounter);
-					update(x+1, y, spielFeld);
+					draw(x+1, y, spielFeld, sol);;
 					walk(x+1, y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
-					sol[x][y-1] = true;
-					update(x, y-1, spielFeld);
+					sol[x][y] = true;
+					draw(x, y-1, spielFeld, sol);;
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && spielFeld[x][y-1]) {								// Schritt nach links
-					sol[x-1][y] = true;
+					sol[x][y] = true;
 					rotCounter--;
-					System.out.println(rotCounter);
-					update(x-1, y, spielFeld);
+					draw(x-1, y, spielFeld, sol);;
 					walk(x-1, y , 1);
 				} else if (!spielFeld[x][y+1] && (spielFeld[x-1][y] || spielFeld[x-1][y+1])) {		// Schritt nach unten
-					sol[x][y+1] = true;
-					if (rotCounter >= 0) {
-						rotCounter -= 2;
-					} else {
-						rotCounter += 2;
-					}
-					System.out.println(rotCounter);
-					update(x, y+1, spielFeld);
+					sol[x][y] = true;
+					rotCounter -= 2;
+					draw(x, y+1, spielFeld, sol);;
 					walk(x, y+1, 0);
 				}
 				break;
 			case 3:			// von links
 				if (!spielFeld[x][y+1] && spielFeld[x-1][y+1]) {									// Schritt nach unten
-					sol[x][y+1] = true;
+					sol[x][y] = true;
 					rotCounter++;
-					System.out.println(rotCounter);
-					update(x, y+1, spielFeld);
+					draw(x, y+1, spielFeld, sol);;
 					walk(x, y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
-					sol[x+1][y] = true;
-					update(x+1, y, spielFeld);
+					sol[x][y] = true;
+					draw(x+1, y, spielFeld, sol);;
 					walk(x+1, y, 3);
 				} else if (!spielFeld[x][y-1] && spielFeld[x+1][y]) {								// Schritt nach oben
-					sol[x][y-1] = true;
+					sol[x][y] = true;
 					rotCounter--;
-					System.out.println(rotCounter);
-					update(x, y-1, spielFeld);
+					draw(x, y-1, spielFeld, sol);;
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y-1] || spielFeld[x][y-1])) {		// Schritt nach links
-					sol[x-1][y] = true;
-					if (rotCounter >= 0) {
-						rotCounter -= 2;
-					} else {
-						rotCounter += 2;
-					}
-					System.out.println(rotCounter);
-					update(x-1, y, spielFeld);
+					sol[x][y] = true;
+					rotCounter -= 2;
+					draw(x-1, y, spielFeld, sol);;
 					walk(x-1, y, 1);
 				}
 				break;
