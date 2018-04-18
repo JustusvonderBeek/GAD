@@ -171,8 +171,10 @@ public class Maze extends Applet {
 					update(x+1, y, spielFeld);
 					walk(x+1,y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
-					if (rotCounter > 0) {
+					if (rotCounter >= 0) {
 						rotCounter -= 2;
+					} else {
+						rotCounter += 2;
 					}
 					sol[x][y-1] = true;
 					update(x, y-1, spielFeld);
@@ -182,6 +184,7 @@ public class Maze extends Applet {
 			case 1:				// von rechts
 				if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1])) {									// Schritt nach oben
 					sol[x][y-1] = true;
+					rotCounter++;
 					update(x, y-1, spielFeld);
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y+1] || spielFeld[x][y+1])) {		// Schritt nach links
@@ -190,10 +193,16 @@ public class Maze extends Applet {
 					walk(x-1, y, 1);
 				} else if (!spielFeld[x][y+1] && spielFeld[x-1][y]) {								// Schritt nach unten
 					sol[x][y+1] = true;
+					rotCounter--;
 					update(x, y+1, spielFeld);
 					walk(x,y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
 					sol[x+1][y] = true;
+					if (rotCounter >= 0) {
+						rotCounter -= 2;
+					} else {
+						rotCounter += 2;
+					}
 					update(x+1, y, spielFeld);
 					walk(x+1,y, 3);
 				}
@@ -201,6 +210,7 @@ public class Maze extends Applet {
 			case 2:				// von unten
 				if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {				// Schritt nach rechts
 					sol[x+1][y] = true;
+					rotCounter++;
 					update(x+1, y, spielFeld);
 					walk(x+1, y, 3);
 				} else if (!spielFeld[x][y-1] && (spielFeld[x+1][y-1] || spielFeld[x+1][y])) {		// Schritt nach oben
@@ -209,10 +219,16 @@ public class Maze extends Applet {
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && spielFeld[x][y-1]) {								// Schritt nach links
 					sol[x-1][y] = true;
+					rotCounter--;
 					update(x-1, y, spielFeld);
 					walk(x-1, y , 1);
 				} else if (!spielFeld[x][y+1] && (spielFeld[x-1][y] || spielFeld[x-1][y+1])) {		// Schritt nach unten
 					sol[x][y+1] = true;
+					if (rotCounter >= 0) {
+						rotCounter -= 2;
+					} else {
+						rotCounter += 2;
+					}
 					update(x, y+1, spielFeld);
 					walk(x, y+1, 0);
 				}
@@ -220,6 +236,7 @@ public class Maze extends Applet {
 			case 3:			// von links
 				if (!spielFeld[x][y+1] && spielFeld[x-1][y+1]) {									// Schritt nach unten
 					sol[x][y+1] = true;
+					rotCounter++;
 					update(x, y+1, spielFeld);
 					walk(x, y+1, 0);
 				} else if (!spielFeld[x+1][y] && (spielFeld[x+1][y+1] || spielFeld[x][y+1])) {		// Schritt nach rechts
@@ -228,10 +245,16 @@ public class Maze extends Applet {
 					walk(x+1, y, 3);
 				} else if (!spielFeld[x][y-1] && spielFeld[x+1][y]) {								// Schritt nach oben
 					sol[x][y-1] = true;
+					rotCounter--;
 					update(x, y-1, spielFeld);
 					walk(x, y-1, 2);
 				} else if (!spielFeld[x-1][y] && (spielFeld[x-1][y-1] || spielFeld[x][y-1])) {		// Schritt nach links
 					sol[x-1][y] = true;
+					if (rotCounter >= 0) {
+						rotCounter -= 2;
+					} else {
+						rotCounter += 2;
+					}
 					update(x-1, y, spielFeld);
 					walk(x-1, y, 1);
 				}
