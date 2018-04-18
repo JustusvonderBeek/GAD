@@ -154,6 +154,7 @@ public class Maze extends Applet {
 			System.out.println("Labyrinth kann verlassen werden");
 			return;
 		}
+		
 		switch (direction) {
 			case 0:				// von oben
 				if (!spielFeld[x-1][y] && spielFeld[x-1][y-1]) {									// Schritt nach links
