@@ -1,10 +1,17 @@
 package Blatt1;
 
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import javax.swing.*;
-import java.awt.*;
-import java.applet.*;
-import java.util.*;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.util.Random;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Maze extends Applet {
 	private static final long serialVersionUID = 1L;
@@ -56,8 +63,8 @@ public class Maze extends Applet {
 	private JPanel pan = new JPanel();
 	private static boolean[][] spielFeld;
 	private int posx, posy;
-	private static int width;
-	private static int height;
+	private static int width = 25;						// Größe des Labyrinths kann hier geändert werden.
+	private static int height = 25;
 	private static int rotCounter = 0;
 
 	private static boolean[][] sol = null;
@@ -131,20 +138,7 @@ public class Maze extends Applet {
 	}
 	
 	public static void main (String[] args) {
-		while (true) {
-			String eingabe = JOptionPane.showInputDialog("Bitte Größe eingeben");
-			try {
-				width = Integer.parseInt(eingabe);
-				if (width <= 0) {
-					continue;
-				}
-				height = Integer.parseInt(eingabe);
-				break;
-			} catch (NumberFormatException e) {
-				System.out.println("Keine gültige Zahl, Eingabe wiederholen");
-			}
-		}
-		boolean[][] spielfeld = generateStandardMaze(width, width);
+		boolean[][] spielfeld = generateMaze(width, width);
 		sol = new boolean[width][height];
 		spielFeld = spielfeld;
 		draw(1, 0, spielfeld, sol);
@@ -155,19 +149,19 @@ public class Maze extends Applet {
 	public static void walk(int x, int y, int direction) {
 		if (x == 1 && y == 0 && direction == 2) {
 			sol[1][0] = false;
-			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden");
+			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden.");
 			return;
 		}
 		if (rotCounter == 4 && sol[x][y] == true) {													// Zählt die Rotationen und ist bei einer Umdrehung = 4 Abbruchbedingung
 			sol[1][0] = false;
-			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden");
+			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden.");
 			return;
 		}
 		if (x == width-2 && y == height-2 && !spielFeld[x+1][y]) {
 			sol[1][0] = false;
 			sol[x][y] = true;
 			draw(x, y, spielFeld, sol);
-			System.out.println("Labyrinth kann verlassen werden");
+			System.out.println("Labyrinth kann verlassen werden.");
 			return;
 		}
 		
