@@ -63,7 +63,7 @@ public class Maze extends Applet {
 	private JPanel pan = new JPanel();
 	private static boolean[][] spielFeld;
 	private int posx, posy;
-	private static int width = 25;						// Größe des Labyrinths kann hier geändert werden.
+	private static int width = 50;						// Größe des Labyrinths kann hier geändert werden.
 	private static int height = 25;
 	private static int rotCounter = 0;
 
@@ -138,7 +138,7 @@ public class Maze extends Applet {
 	}
 	
 	public static void main (String[] args) {
-		boolean[][] spielfeld = generateMaze(width, width);
+		boolean[][] spielfeld = generateMaze(width, height);
 		sol = new boolean[width][height];
 		spielFeld = spielfeld;
 		draw(1, 0, spielfeld, sol);
