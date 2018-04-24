@@ -26,7 +26,6 @@ public class BinarySearchTesting {
 			
 			
 		}
-		
 		Interval interval = BinSea.search(sortedData, new NonEmptyInterval(10, 50));
 		Interval interval2 = BinSea.search(secondSortedData, new NonEmptyInterval(10, 50));
 		System.out.println("Gefundenes Interval:\nsortedData: " + interval.toString() + "\nsecondSortedData: " + interval2.toString());
