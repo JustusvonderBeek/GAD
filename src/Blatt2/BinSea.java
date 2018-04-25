@@ -35,28 +35,36 @@ class BinSea {
 		  while (upperBorder >= lowerBorder) {
 			  int tmp = (upperBorder + lowerBorder) / 2;
 			  if (sortedData[tmp] == value) {
-				  System.out.println("Genau Grenze gefunden. In Lower");
 				  return tmp;
-			  } else if (sortedData[tmp] > value) {
-				  upperBorder = tmp - 1;
-			  } else if (sortedData[tmp] < value && sortedData[tmp+1] > value) {
-				  return tmp;
-			  } else {
+			  } else if (sortedData[tmp] < value) {
 				  lowerBorder = tmp + 1;
+			  } else {
+				  if (tmp - 1 >= 0) {
+					  if (sortedData[tmp-1] < value) {
+						  return tmp;
+					  }
+				  } else {
+					  return tmp;
+				  }
+				  upperBorder = tmp - 1;
 			  }
 		  }
 	  } else {
 		  while (upperBorder >= lowerBorder) {
 			  int tmp = (upperBorder + lowerBorder) / 2;
 			  if (sortedData[tmp] == value) {
-				  System.out.println("Genau Grenze gefunden. In upper");
 				  return tmp;
 			  } else if (sortedData[tmp] > value) {
-				  upperBorder = tmp -1;
-			  } else if (sortedData[tmp] > value && sortedData[tmp-1] < value) {
-				return tmp;  
+				  upperBorder = tmp - 1;
 			  } else {
-				  lowerBorder = tmp +1;
+				  if (tmp + 1 < sortedData.length) {
+					  if (sortedData[tmp+1] > value) {
+						  return tmp;
+					  }
+				  } else {
+					  return tmp;
+				  }
+				  lowerBorder = tmp + 1;
 			  }
 		  }
 	  }
@@ -85,6 +93,9 @@ class BinSea {
 	  int lowerBorder = search(sortedData, valueRange.getFrom(), true);
 	  int upperBorder = search(sortedData, valueRange.getTo(), false);
 	  if (lowerBorder == -1 || upperBorder == -1) {
+		 return new EmptyInterval();
+	  }
+	  if (lowerBorder > upperBorder) {
 		  return new EmptyInterval();
 	  }
 	  return new NonEmptyInterval(lowerBorder, upperBorder);

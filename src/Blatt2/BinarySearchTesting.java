@@ -3,32 +3,23 @@ package Blatt2;
 public class BinarySearchTesting {
 
 	public static void main(String[] args) {
-		// TODO: implement testing here
-		int[] sortedData = {-33, -5, -2, 0, 3, 7, 15, 33 ,122};
-		int[] secondSortedData = {-10, 33, 50, 99, 123, 4242};
-		boolean flag = true;
-		int test = BinSea.search(sortedData, -4, flag);
-		int test2 = BinSea.search(secondSortedData, -20, flag);
-		if (flag) {
-			if (test != -1) {
-				System.out.println("Untere Intervallgrenze in sortedData: " + test + " Zahl: " + sortedData[test]);
-			} 
-			if (test2 != -1) {
-				System.out.println("Untere Intervallgrenze in secondSortedData: " + test2 + " Zahl: " + secondSortedData[test2]);
-			}
-		} else {
-			if (test != -1) {
-				System.out.println("Obere Intervallgrenze in sortedData: " + test + " Zahl: " + sortedData[test]);
-			}
-			if (test2 != -1) {
-				System.out.println("Obere Intervallgrenze in secondSortedData: " + test2 + " Zahl: " + secondSortedData[test2]);
-			}
-			
-			
-		}
-		Interval interval = BinSea.search(sortedData, new NonEmptyInterval(10, 50));
-		Interval interval2 = BinSea.search(secondSortedData, new NonEmptyInterval(10, 50));
-		System.out.println("Gefundenes Interval:\nsortedData: " + interval.toString() + "\nsecondSortedData: " + interval2.toString());
+		int[] sortedData = {-10, 33, 50, 99, 123, 4242};
+		Interval testCase1 = BinSea.search(sortedData, new NonEmptyInterval(-12, -11));		// linker Rand
+		System.out.println("TestCase1 [-12;-11]: " + testCase1);
 		
+		Interval testCase2 = BinSea.search(sortedData, new NonEmptyInterval(-50, 60));		// linker Grenze nicht enthalten
+		System.out.println("TestCase2 [-50; 60]: " + testCase2);
+		
+		Interval testCase3 = BinSea.search(sortedData, new NonEmptyInterval(5, 60));		// Im Interval
+		System.out.println("TestCase3 [5; 60]: " + testCase3);
+		
+		Interval testCase4 = BinSea.search(sortedData, new NonEmptyInterval(10, 5000));		// rechte Grenze nicht enthalten
+		System.out.println("TestCase4 [10; 5000]: " + testCase4);
+		
+		Interval testCase5 = BinSea.search(sortedData, new NonEmptyInterval(5000, 6000));	// beide Grenzen nicht enthalten
+		System.out.println("TestCase5 [5000; 6000]: " + testCase5);
+		
+		Interval testCase6 = BinSea.search(sortedData, new NonEmptyInterval(10, 5));		// Falsch herum
+		System.out.println("TestCase6 [10; 5]: " + testCase6);
 	}
 }
