@@ -148,19 +148,17 @@ public class Maze extends Applet {
 	
 	public static void walk(int x, int y, int direction) {
 		if (x == 1 && y == 0 && direction == 2) {
-			sol[1][0] = false;
 			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden.");
 			return;
 		}
 		if (rotCounter == 4 && sol[x][y] == true) {													// Zählt die Rotationen und ist bei einer Umdrehung = 4 Abbruchbedingung
-			sol[1][0] = false;
 			System.out.println("Gefangen, Labyrinth kann nicht verlassen werden.");
 			return;
 		}
 		if (x == width-2 && y == height-2 && !spielFeld[x+1][y]) {
-			sol[1][0] = false;
 			sol[x][y] = true;
 			draw(x, y, spielFeld, sol);
+			draw(x+1,y, spielFeld, sol);
 			System.out.println("Labyrinth kann verlassen werden.");
 			return;
 		}
