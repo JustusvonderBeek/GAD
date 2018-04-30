@@ -1,3 +1,5 @@
+package Blatt3;
+
 /**
  * Die Klasse RingQueue soll eine zirkuläre Warteschlange auf
  * Basis der Klasse {@link DynamicArray} implementieren.

@@ -1,3 +1,5 @@
+package Blatt3;
+
 /**
  * Die Klasse DynamicStack soll einen Stapel auf
  * Basis der Klasse {@link DynamicArray} implementieren.

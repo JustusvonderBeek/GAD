@@ -1,3 +1,5 @@
+package Blatt3;
+
 /**
  * Die Klasse StackyQueue soll eine Warteschlange auf
  * Basis der Klasse {@link DynamicStack} implementieren. Es

@@ -1,3 +1,5 @@
+package Blatt3;
+
 /**
  * Diese Klasse implementiert ein dynamisches Feld.
  */

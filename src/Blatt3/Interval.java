@@ -1,3 +1,5 @@
+package Blatt3;
+
 /**
  * Objekte der Klasse Interval stellen einen Bereich von Zahlen dar. Die
  * Intervallgrenzen sind dabei jeweils eingeschlossen.
