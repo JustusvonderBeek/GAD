@@ -18,9 +18,7 @@ public class RingQueue {
   }
   
   public boolean isEmpty() {
-    /*
-     * Todo
-     */
+    return from == to;
   }
   
   /**
@@ -46,9 +44,10 @@ public class RingQueue {
    * @param value der einzufügende Wert
    */
   public void enqueue(int value) {
-    /*
-     * Todo
-     */
+	  to++;
+	  NonEmptyInterval usage = new NonEmptyInterval(from, to);
+	  dynArr.reportUsage(usage, to);
+	  dynArr.set(to, value);
   }
   
   /**
@@ -57,8 +56,9 @@ public class RingQueue {
    * @return das entfernte Element
    */
   public int dequeue() {
-    /*
-     * Todo
-     */
+	int value = dynArr.get(from);
+	NonEmptyInterval usage = new NonEmptyInterval(from+1, to);
+    dynArr.reportUsage(usage, to-from-1);
+    return value;
   }
 }

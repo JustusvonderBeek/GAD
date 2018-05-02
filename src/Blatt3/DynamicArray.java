@@ -74,9 +74,31 @@ public class DynamicArray {
    * befinden, die vor dem Auruf in Verwendung waren
    */
   public Interval reportUsage(Interval usage, int minSize) {
-    /*
-     * Todo
-     */
+    if (getInnerLength() <= minSize) {
+    	enlargeArray();
+    } else if (minSize < getInnerLength()/maxOverhead) {
+    	shrinkArray();
+    }
+    if (usage.getSize(getInnerLength())  ) {
+    	
+    }
+	return null;  
+  }
+  
+  private void enlargeArray() {
+	  int[] newElements = new int[getInnerLength()*growthFactor];
+	  for (int i = 0; i < elements.length; i++) {
+		newElements[i] = this.get(i);
+	  }
+	  this.elements = newElements;
+  }
+  
+  private void shrinkArray() {
+	  int[] newElements = new int[getInnerLength()/growthFactor];
+	  for (int i = 0; i < newElements.length; i++) {
+		newElements[i] = this.get(i);
+	  }
+	  elements = newElements;
   }
 
   /**
@@ -87,9 +109,7 @@ public class DynamicArray {
    * @return das ermittelte Element
    */
   public int get(int index) {
-    /*
-     * Todo
-     */
+    return this.elements[index];
   }
   
   /**
@@ -100,9 +120,19 @@ public class DynamicArray {
    * @param value der Wert des zu setzenden Elementes
    */
   public void set(int index, int value) {
-    /*
-     * Todo
-     */
+    this.elements[index] = value;
+  }
+  
+  public String toString() {
+	  String result = "[ ";
+	  for (int i = 0; i < getInnerLength(); i++) {
+		if (i + 1 == getInnerLength()) {
+			result += get(i) + "]";
+		} else {
+			result += get(i) + ", ";
+		}
+	  }
+	  return result;
   }
 
 }

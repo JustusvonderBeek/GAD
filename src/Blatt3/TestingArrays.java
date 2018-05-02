@@ -1,0 +1,50 @@
+package Blatt3;
+
+public class TestingArrays {
+
+	private static RingQueue ring;
+	private static DynamicArray dynamic;
+	private static StackyQueue stack;
+	private static DynamicStack dstack;
+	
+	public static void main(String[] args) {
+		ring = new RingQueue(2, 3);
+		dynamic = new DynamicArray(2, 3);
+		stack = new StackyQueue(2, 3);
+		dstack = new DynamicStack(2, 3);
+		
+		// Testing DynamicArray
+		
+		
+		
+		// Insertion
+		
+		int itterations = 20;
+		int itterations2 = 10;
+		
+		for (int i = 0; i < itterations; i++) {
+			int value = 1 + (int) Math.random()*30;
+			ring.enqueue(value);
+//			dynamic.set(i, value);
+			stack.enqueue(value);
+			dstack.pushBack(value);
+			ArraysToString();
+		}
+		
+		for (int i = 0; i < itterations2; i++) {
+			ring.dequeue();
+			stack.dequeue();
+			dstack.popBack();
+			ArraysToString();
+		}
+
+	}
+	
+	public static void ArraysToString() {
+		System.out.println("Datenstrukturen:\nRing: " + ring);
+		System.out.println("Stack: " + stack);
+		System.out.println("Dynamic: " + dynamic);
+		System.out.println("Dynamic Stack" + dstack);
+	}
+
+}
