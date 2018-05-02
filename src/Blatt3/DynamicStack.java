@@ -28,7 +28,7 @@ public class DynamicStack {
    */
   public void pushBack (int value) {
 	  length++;			// Enthält nach dem Push ein weiteres Element
-	  NonEmptyInterval usage = new NonEmtpyInterval(0, getLength()-1); // Gibt die benutzen Indices an
+	  NonEmptyInterval usage = new NonEmptyInterval(0, getLength()-1); // Gibt die benutzen Indices an
 	  dynArr.reportUsage(usage, getLength());
 	  dynArr.set(usage.getTo(), value);
   }
@@ -38,15 +38,21 @@ public class DynamicStack {
    * @return das entfernte Element
    */
   public int popBack () {
-    int value = dynArr.get(getLength()-1);  // Entnimmt den gesuchten Wert aus dem Array
-	length--;								// Verringert die Element die auf dem Stack liegen
-    NonEmptyInterval usage = new NonEmptyInterval(0, getLength()-1);  // Erzeugt ein Interval mit den Element, die in Benutzung sind
+    int value = dynArr.get(getLength()-1);							  		// Entnimmt den gesuchten Wert aus dem Array
+    length--;																// Verringert die Element die auf dem Stack liegen
+    NonEmptyInterval usage;
+    if (getLength() > 0) {
+    	usage = new NonEmptyInterval(0, getLength()-1);				 		// Erzeugt ein Interval mit den Element, die in Benutzung sind
+    } else {
+    	usage = new NonEmptyInterval(0, getLength());
+    }
     dynArr.reportUsage(usage, getLength());
+    dynArr.set(getLength(), 0);
     return value;
   }
   
   public String toString() {
-	  String result = dynArr + " Länge: " + getLength();
+	  String result = dynArr + " ; Länge: " + getLength();
 	  return result;
   }
 }
