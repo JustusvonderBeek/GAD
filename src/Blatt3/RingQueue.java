@@ -44,10 +44,19 @@ public class RingQueue {
    * @param value der einzufügende Wert
    */
   public void enqueue(int value) {
-	  to++;
 	  NonEmptyInterval usage = new NonEmptyInterval(from, to);
-	  dynArr.reportUsage(usage, to);
-	  dynArr.set(to, value);
+	  usage = (NonEmptyInterval) dynArr.reportUsage(usage, ++size);
+	  if (usage.getFrom() != from) {
+	    	from = usage.getFrom();
+	    }
+	    if (usage.getTo() != to) {
+	        to = usage.getTo();	
+	    }
+	  if (size <= 1) {
+		  dynArr.set(to, value);
+	  } else {
+		  dynArr.set(++to, value);
+	  }
   }
   
   /**
@@ -57,8 +66,25 @@ public class RingQueue {
    */
   public int dequeue() {
 	int value = dynArr.get(from);
-	NonEmptyInterval usage = new NonEmptyInterval(from+1, to);
-    dynArr.reportUsage(usage, to-from-1);
+	dynArr.set(from, 0);
+	NonEmptyInterval usage;
+	if (size == 1) {
+		usage = new NonEmptyInterval(from, to);
+	} else {
+		usage = new NonEmptyInterval(++from, to);
+	}
+    usage = (NonEmptyInterval) dynArr.reportUsage(usage, --size);
+    if (usage.getFrom() != from) {
+    	from = usage.getFrom();
+    }
+    if (usage.getTo() != to) {
+        to = usage.getTo();	
+    }
     return value;
+  }
+  
+  public String toString() {
+	  String result = dynArr + " ; From: " + from + " ; To: " + to + " ; Size: " + size;
+	  return result;
   }
 }

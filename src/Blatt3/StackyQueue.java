@@ -54,4 +54,10 @@ public class StackyQueue {
      * Todo
      */
   }
+  
+  public String toString() {
+	  String result = "Noch nicht implementiert";
+	  return result;
+  }
+  
 }

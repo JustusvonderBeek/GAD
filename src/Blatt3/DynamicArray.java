@@ -74,23 +74,39 @@ public class DynamicArray {
    * befinden, die vor dem Auruf in Verwendung waren
    */
   public Interval reportUsage(Interval usage, int minSize) {
-	if (usage.getFrom() > 0 && usage.getTo() == getInnerLength()-1) {
-		shiftToIndex(0, usage);
-		usage = new NonEmptyInterval(0, usage.getSize(getInnerLength()));
-	}
-	if (minSize >= getInnerLength()) {
-		enlargeArray(minSize);
-	}
-	if (usage.getSize(getInnerLength()) <= getInnerLength()/maxOverhead) {
-		shrinkArray();
-	}
+	  if (getInnerLength() < minSize) {
+		  enlargeArray(minSize);
+	  }
+	  if (minSize > usage.getSize(getInnerLength()) && (usage.getTo() == getInnerLength()-1 && usage.getFrom() > 0)) {
+		  shiftToIndex(0, usage);
+		  usage = new NonEmptyInterval(0, usage.getSize(getInnerLength())-1);
+	  }
+	  if (usage.getSize(getInnerLength()) <= getInnerLength()/maxOverhead && minSize <= usage.getSize(getInnerLength())) {
+		  if (usage.getFrom() > 0 && usage.getTo() < getInnerLength()) {
+			  if (usage.getFrom() <= usage.getTo()) {
+				  shiftToIndex(0, usage);
+				  usage = new NonEmptyInterval(0, usage.getSize(getInnerLength())-1);
+			  } else if (usage.getFrom() > usage.getTo()) {
+				  NonEmptyInterval interval = new NonEmptyInterval(usage.getFrom(), getInnerLength()-1);
+				  shiftToIndex(usage.getTo()+1, interval);
+				  System.out.println(this);
+				  shiftToIndex(usage.getTo()+1+interval.getSize(getInnerLength()), new NonEmptyInterval(0, usage.getTo()));
+				  System.out.println(this);
+				  shiftToIndex(0, new NonEmptyInterval(usage.getTo()+1, usage.getSize(getInnerLength())));
+				  System.out.println(this);
+				  usage = new NonEmptyInterval(0, usage.getSize(getInnerLength())-1);
+			  }
+		  }
+		  shrinkArray();
+	  }
 	return usage;
   }
   
   private void shiftToIndex(int index, Interval usage) {
 	  int tmp = usage.getFrom();
 	  for (int i = 0; i < usage.getSize(getInnerLength()); i++) {
-		  set(index++, get((tmp++)%getInnerLength()));
+		  set(index++, get((tmp++) % getInnerLength()));
+		  set(tmp-1, 0);
 	  }
   }
   
@@ -136,12 +152,12 @@ public class DynamicArray {
 	  String result = "[";
 	  for (int i = 0; i < getInnerLength(); i++) {
 		if (i + 1 == getInnerLength()) {
-			result += get(i) + "]";
+			result += get(i);
 		} else {
 			result += get(i) + ", ";
 		}
 	  }
-	  return result;
+	  return result + "]";
   }
 
 }
