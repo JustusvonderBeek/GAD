@@ -25,6 +25,9 @@ public class TestingArrays {
 		System.out.println("Dynamic: " + dynamic);
 		dynamic.set(2, -15);
 		System.out.println("Dynamic: " + dynamic);
+		interval = new NonEmptyInterval(0,0);
+		dynamic.reportUsage(interval, 1);
+		System.out.println("Dynamic: " + dynamic);
 		
 		// Insertion
 		/*
