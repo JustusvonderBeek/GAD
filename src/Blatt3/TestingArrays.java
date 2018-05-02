@@ -15,15 +15,25 @@ public class TestingArrays {
 		
 		// Testing DynamicArray
 		
-		
+		NonEmptyInterval interval = new NonEmptyInterval(0, 0);
+		dynamic.reportUsage(interval, 2);
+		dynamic.set(0, 5);
+		dynamic.set(1, 3);
+		System.out.println("Dynamic: " + dynamic);
+		interval = new NonEmptyInterval(0, 1);
+		dynamic.reportUsage(interval, 4);
+		System.out.println("Dynamic: " + dynamic);
+		dynamic.set(2, -15);
+		System.out.println("Dynamic: " + dynamic);
 		
 		// Insertion
-		
+		/*
 		int itterations = 20;
 		int itterations2 = 10;
 		
 		for (int i = 0; i < itterations; i++) {
 			int value = 1 + (int) Math.random()*30;
+			System.out.println("Value: " + value);
 			ring.enqueue(value);
 //			dynamic.set(i, value);
 			stack.enqueue(value);
@@ -37,7 +47,7 @@ public class TestingArrays {
 			dstack.popBack();
 			ArraysToString();
 		}
-
+		 */
 	}
 	
 	public static void ArraysToString() {
