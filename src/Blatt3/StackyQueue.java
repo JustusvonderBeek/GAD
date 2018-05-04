@@ -11,7 +11,7 @@ public class StackyQueue {
   private DynamicArray working;
 
   private NonEmptyInterval waitingUsage;
-  private NonEmtpyInterval workingUsage;
+  private NonEmptyInterval workingUsage;
   private int length;
   /**
    * Diese Methode ermittelt die Länge der Warteschlange.
@@ -43,8 +43,8 @@ public class StackyQueue {
   public void enqueue (int value) {
     length++;
 	waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()+1);
-	usage = waiting.reportUsage(waitingUsage, getLength());
-	waiting.set(usage.getTo(), value);
+	waitingUsage = (NonEmptyInterval) waiting.reportUsage(waitingUsage, getLength());
+	waiting.set(waitingUsage.getTo(), value);
 	System.out.println(this);
   }
   
@@ -57,20 +57,20 @@ public class StackyQueue {
      length--;
 	 if (workingUsage.getSize(working.getInnerLength()) == 0) {
 		for (int i = 0; i < waitingUsage.getSize(waiting.getInnerLength()); i++) {
-			if (waitingUsage.getSize(waiting.getInnerLength) > 0) {
+			if (waitingUsage.getSize(waiting.getInnerLength()) > 0) {
 				waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()-1);
 			} else {
 				break;
 			}
 			int value = waiting.get(waitingUsage.getTo());
 			waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()-1);
-			waiting.reportUsage(waitingUsage, waitingUsage.getSize(waiting.getInnerLength());
-			workingUsage = new NonEmptyInterval(workingUsage.getFrom(), workingUsagegetTo());
-			working.reportUsage(workingUsage, workingUsage.getSize(working.getInnterLength));
+			waiting.reportUsage(waitingUsage, waitingUsage.getSize(waiting.getInnerLength()));
+			workingUsage = new NonEmptyInterval(workingUsage.getFrom(), workingUsage.getTo());
+			working.reportUsage(workingUsage, workingUsage.getSize(working.getInnerLength()));
 		}
 	 }
-	 workingUsage = working.reportUsage(workingUsage, usage.getSize(working.getInnerLength());
-	 int value = working.get(usage.getTo());
+	 workingUsage = (NonEmptyInterval) working.reportUsage(workingUsage, workingUsage.getSize(working.getInnerLength()));
+	 int value = working.get(workingUsage.getTo());
 	 return value;
   }
   
