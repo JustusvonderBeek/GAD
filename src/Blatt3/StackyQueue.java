@@ -7,18 +7,18 @@ package Blatt3;
  * Datenspeicherung verwendet werden.
  */
 public class StackyQueue {
-  /*
-   * Todo
-   */
+  private DynamicArray waiting;
+  private DynamicArray working;
 
+  private NonEmptyInterval waitingUsage;
+  private NonEmtpyInterval workingUsage;
+  private int length;
   /**
    * Diese Methode ermittelt die Länge der Warteschlange.
    * @return die Länge der Warteschlange
    */
   public int getLength() {
-    /*
-     * Todo
-     */
+    return this.length;
   }
   
   /**
@@ -28,9 +28,11 @@ public class StackyQueue {
    * @param maxOverhead
    */
   public StackyQueue (int growthFactor, int maxOverhead) {
-    /*
-     * Todo
-     */
+	waiting = new DynamicArray(growthFactor, maxOverhead);
+	working = new DynamicArray(growthFactor, maxOverhead);
+	this.length = 0;
+	waitingUsage = new NonEmptyInterval(0,0);
+	workingUsage = new NonEmptyInterval(0,0);
   }
   
   /**
@@ -39,9 +41,11 @@ public class StackyQueue {
    * @param value der einzufügende Wert
    */
   public void enqueue (int value) {
-    /*
-     * Todo
-     */
+    length++;
+	waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()+1);
+	usage = waiting.reportUsage(waitingUsage, getLength());
+	waiting.set(usage.getTo(), value);
+	System.out.println(this);
   }
   
   /**
@@ -50,9 +54,24 @@ public class StackyQueue {
    * @return das entfernte Element
    */
   public int dequeue () {
-    /*
-     * Todo
-     */
+     length--;
+	 if (workingUsage.getSize(working.getInnerLength()) == 0) {
+		for (int i = 0; i < waitingUsage.getSize(waiting.getInnerLength()); i++) {
+			if (waitingUsage.getSize(waiting.getInnerLength) > 0) {
+				waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()-1);
+			} else {
+				break;
+			}
+			int value = waiting.get(waitingUsage.getTo());
+			waitingUsage = new NonEmptyInterval(waitingUsage.getFrom(), waitingUsage.getTo()-1);
+			waiting.reportUsage(waitingUsage, waitingUsage.getSize(waiting.getInnerLength());
+			workingUsage = new NonEmptyInterval(workingUsage.getFrom(), workingUsagegetTo());
+			working.reportUsage(workingUsage, workingUsage.getSize(working.getInnterLength));
+		}
+	 }
+	 workingUsage = working.reportUsage(workingUsage, usage.getSize(working.getInnerLength());
+	 int value = working.get(usage.getTo());
+	 return value;
   }
   
   public String toString() {
