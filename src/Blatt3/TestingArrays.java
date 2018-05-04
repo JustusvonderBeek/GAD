@@ -46,10 +46,9 @@ public class TestingArrays {
 	public static void adding(int itterations) {
 		for (int i = 0; i < itterations; i++) {
 			int value = 1 + (int)(Math.random()*30);
-			System.out.println("Value: " + value);
+			System.out.println("Einzufügender Wert: " + value);
 			ring.enqueue(value);
-//			dynamic.set(i, value);
-//			stack.enqueue(value);
+			stack.enqueue(value);
 			dstack.pushBack(value);
 			ArraysToString("Hinzufügen");
 		}
@@ -58,7 +57,7 @@ public class TestingArrays {
 	public static void deleting (int itterations) {
 		for (int i = 0; i < itterations; i++) {
 			ring.dequeue();
-//			stack.dequeue();
+			stack.dequeue();
 			dstack.popBack();
 			ArraysToString("Entfernen");
 		}
@@ -68,7 +67,7 @@ public class TestingArrays {
 	public static void ArraysToString(String s) {
 		System.out.println("Datenstrukturen: " + s);
 		System.out.println("Ring: " + ring);
-//		System.out.println("Stack: " + stack);
+		System.out.println("Stack: " + stack);
 //		System.out.println("Dynamic: " + dynamic);
 		System.out.println("Dynamic Stack: " + dstack + "\n");
 	}
