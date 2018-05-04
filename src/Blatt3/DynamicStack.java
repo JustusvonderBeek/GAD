@@ -49,12 +49,8 @@ public class DynamicStack {
     System.out.println(this);
     dynArr.reportUsage(usage, getLength());
     System.out.println(this);
-    if (getLength() > 1) {
-        dynArr.set(getLength(), 0);
-    } else {
-        dynArr.set(getLength()-1, 0);
-    }
-    System.out.println(this);
+    dynArr.set(usage.getTo(), 0);
+    Sytem.out.println(this);
     return value;
   }
   
