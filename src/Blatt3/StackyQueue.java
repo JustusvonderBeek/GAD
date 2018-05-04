@@ -11,7 +11,7 @@ public class StackyQueue {
   private DynamicArray working;
 
   private NonEmptyInterval waitingUsage;
-  private NonEmtpyInterval workingUsage;
+  private NonEmptyInterval workingUsage;
   private int length;
   /**
    * Diese Methode ermittelt die Länge der Warteschlange.
