@@ -40,17 +40,9 @@ public class DynamicStack {
   public int popBack () {
     int value = dynArr.get(getLength()-1);							  		// Entnimmt den gesuchten Wert aus dem Array
     length--;																// Verringert die Element die auf dem Stack liegen
-    NonEmptyInterval usage;
-    if (getLength() > 0) {
-    	usage = new NonEmptyInterval(0, getLength()-1);				 		// Erzeugt ein Interval mit den Element, die in Benutzung sind
-    } else {
-    	usage = new NonEmptyInterval(0, getLength());
-    }
-    System.out.println(this);
+    NonEmptyInterval usage = new NonEmptyInterval(0, getLength());			// Erzeugt ein Interval mit den Element, die in Benutzung sind
     dynArr.reportUsage(usage, getLength());
-    System.out.println(this);
     dynArr.set(usage.getTo(), 0);
-    Sytem.out.println(this);
     return value;
   }
   
