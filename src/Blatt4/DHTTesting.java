@@ -9,6 +9,14 @@ public class DHTTesting {
 		
 		HashString hs = new HashString(20);
 		hs.hash("testT");
+		hs.hash("zweiterTest");
+		hs.hash("blablabla");
+		hs.hash("nocheinTessts");
+		
+		hs.hash("testT");
+		hs.hash("zweiterTest");
+		hs.hash("blablabla");
+		hs.hash("nocheinTessts");
 		
 //		String test = "";
 //		

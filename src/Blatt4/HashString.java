@@ -24,6 +24,8 @@ public class HashString {
    * @param key der Schlüssel, der gehasht werden sollen
    * @return der Hashwert des Schlüssels
    */
+  
+  // TODO: etwas aufräumen und übersichtlicher gestalten, sowie kommentieren
   public int hash (String key) {
 	  int hash = key.hashCode(); // erstellen einer int Darstellung des Keys
 	  String bitstring = Integer.toBinaryString(hash);
@@ -49,7 +51,7 @@ public class HashString {
 	  System.out.println("String: " + key + "\nHash: " + hash + "\nByteValue: " + bitstring + "\nW: " + w + "\nK: " + k + "\nArray: " + printingArray(parts));
 	  int[] a = new int[k];
 	  for (int i = 0; i < a.length; i++) {
-		a[i] = i*2+5;
+		a[i] = i*2+5;		// TODO: a noch richtig wählen
 	  }
 	  int result = 0;
 	  for (int i = 0; i < parts.length; i++) {
