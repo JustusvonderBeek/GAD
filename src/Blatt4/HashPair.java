@@ -1,3 +1,5 @@
+package Blatt4;
+
 /**
  * Die Klasse {@link HashPair} speichert zwei Indices
  */
