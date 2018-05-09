@@ -25,45 +25,62 @@ public class HashString {
    * @return der Hashwert des Schlüssels
    */
   
-  // TODO: etwas aufräumen und übersichtlicher gestalten, sowie kommentieren
   public int hash (String key) {
-	  int hash = key.hashCode(); // erstellen einer int Darstellung des Keys
-	  String bitstring = Integer.toBinaryString(hash);
-	  int hexValue = Integer.toHexString(hash).length() * 4;
-	  if (bitstring.length() != hexValue) {
-		  int difference = hexValue - bitstring.length();
-		  String add = "";
-		  for (int i = 0; i < difference; i++) {
-			add += "0";
-		  }
-		  add += bitstring;
-		  bitstring = add;
-	  }
-	  int w = (int) (Math.log(m)/Math.log(2));
-	  int k = bitstring.length()/w;
-	  int[] parts = new int[k];
-	  int count = 0;
-	  for (int i = 0; i < bitstring.length()-1; i+=4) {
-		 String substring = bitstring.substring(i, i+4);
-		 parts[count] = toInteger(substring);
-		 count++;
-	  }
-	  System.out.println("String: " + key + "\nHash: " + hash + "\nByteValue: " + bitstring + "\nW: " + w + "\nK: " + k + "\nArray: " + printingArray(parts));
+	  String bitstring= processKey(key);
+	  int w = (int) (Math.log(m)/Math.log(2));		// Ausrechnen, wie viele Bits in einen Teil gehören
+	  int k = bitstring.length()/w;					// Ausrechnen der Anzahl an Teilen
+	  int[] parts = new int[k];						// Erstellen des k-Tupels
+	  
+	  // TODO: muss den Bitstring noch umdrehen, damit ich ihn einfacher bearbeiten kann. vllt auch in byteToInteger
+	  createParts(bitstring, parts, w);				// Überführen der einzelnen Bytes in ein k-Tupel
 	  int[] a = new int[k];
 	  for (int i = 0; i < a.length; i++) {
-		a[i] = i*2+5;		// TODO: a noch richtig wählen
+		a[i] = i*2+5;
 	  }
 	  int result = 0;
 	  for (int i = 0; i < parts.length; i++) {
 		result += parts[i] * a[i];
 	  }
 	  result %= m;
-	  System.out.println("Ergebnis: " + result);
+	  System.out.println("String: " + key + "\nByteValue: " + bitstring + "\nW: " + w + "\nK: " + k + "\nArray: " + printingArray(parts) + "\nErgebnis: " + result);
 	  return result;
   }
   
-  private int toInteger(String string) {
-	  int result = Integer.parseInt(string.substring(0, 1))*8 + Integer.parseInt(string.substring(1, 2))*4 + Integer.parseInt(string.substring(2, 3))*2 + Integer.parseInt(string.substring(3, 4));
+  private String processKey(String key) {
+	  String hash = Integer.toBinaryString(key.hashCode()); // Erstellen eines Integerwertes aus dem String Schlüssel
+	  int hexValue = Integer.toHexString(key.hashCode()).length() * 4; // Vergleichswert zum Auffüllen mit Nullen
+	  if (hash.length() != hexValue) {
+		  int difference = hexValue - hash.length();
+		  String add = "";
+		  for (int i = 0; i < difference; i++) {
+			add += "0";								// Einfädeln von führenden Nullen solange, bis die Differenz ausgeglichen ist
+		  }
+		  add += hash;								// Anhängen des ursprünglichen Strings, sodass eine Korrekte Bitdarstellung gewährleistet ist
+		  hash = add;							// Ändern der Referenz
+	  }
+	  System.out.println("Result: " + hash);
+	  return hash;
+  }
+  
+  private void createParts(String string, int[] parts, int w) {
+	  int lowerIndex = 0;
+	  int higherIndex = w;
+	  System.out.println("Parts " + parts.length);
+	  for (int i = 0; i < parts.length; i++) {
+		 String substring = string.substring(lowerIndex, higherIndex);
+		 System.out.println("Substring: " + substring);
+		 parts[i] = byteToInteger(substring);
+		 lowerIndex = higherIndex;
+		 higherIndex += w;
+	  }
+  }
+  
+  private int byteToInteger(String string) {
+	  int result = 0;
+	  int index = 0;
+	  for (int i = 0; i < string.length(); i++) {
+		result += Integer.parseInt(string.substring(index, ++index))*Math.pow(2, i);
+	  }
 	  return result;
   }
   

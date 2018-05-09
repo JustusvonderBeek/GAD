@@ -8,17 +8,20 @@ public class DHTTesting {
 		int itteration = 20;
 		
 		HashString hs = new HashString(20);
-		hs.hash("testT");
-		hs.hash("zweiterTest");
-		hs.hash("blablabla");
-		hs.hash("nocheinTessts");
 		
-		hs.hash("testT");
-		hs.hash("zweiterTest");
-		hs.hash("blablabla");
-		hs.hash("nocheinTessts");
+//		hs.hash("testT");
+//		hs.hash("zweiterTest");
+//		hs.hash("blablabla");
+//		hs.hash("nocheinTessts");
+//		
+//		hs.hash("testT");
+//		hs.hash("zweiterTest");
+//		hs.hash("blablabla");
+//		hs.hash("nocheinTessts");
 		
-//		String test = "";
+		table.hashKey("test");
+		
+//		String test = "";j
 //		
 //		for (int i = 0; i < itteration; i++) {
 //			test += "Test";
