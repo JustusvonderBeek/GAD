@@ -1,3 +1,5 @@
+package Blatt5;
+
 import java.util.Random;
 
 /**

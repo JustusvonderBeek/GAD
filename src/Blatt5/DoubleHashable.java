@@ -1,3 +1,5 @@
+package Blatt5;
+
 
 public interface DoubleHashable<K> {
   /**

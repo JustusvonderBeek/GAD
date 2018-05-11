@@ -1,3 +1,5 @@
+package Blatt5;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.LongStream;

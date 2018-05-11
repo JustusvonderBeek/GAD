@@ -1,3 +1,5 @@
+package Blatt5;
+
 import static org.junit.Assert.*;
 
 import java.util.Hashtable;

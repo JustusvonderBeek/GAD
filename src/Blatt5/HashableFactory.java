@@ -1,3 +1,5 @@
+package Blatt5;
+
 
 /**
  * Dieses Interface beschreibt eine Fabrik, die aus
