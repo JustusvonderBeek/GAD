@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Random;
 
 import org.junit.Test;
 

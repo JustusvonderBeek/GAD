@@ -1,7 +1,6 @@
 package Blatt5;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Optional;
 
 /**
  * Die Klasse DoubleHashTable implementiert eine Hashtabelle, die doppeltes
@@ -11,9 +10,8 @@ import java.util.*;
  * @param <V> der Typ der Werte, die in der Hashtabelle gespeichert werden
  */
 public class DoubleHashTable<K, V> {
-  /*
-   * Todo
-   */
+  
+	int size;
 
   /**
    * Diese Methode implementiert h(x, i).
@@ -37,9 +35,7 @@ public class DoubleHashTable<K, V> {
    * @param hashableFactory Fabrik, die aus einer Größe ein DoubleHashable<K>-Objekt erzeugt.
    */
   public DoubleHashTable(int primeSize, HashableFactory<K> hashableFactory) {
-    /*
-     * Todo
-     */
+    this.size = primeSize;
   }
 
   /**
