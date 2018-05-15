@@ -1,5 +1,6 @@
 package Blatt5;
 
+import java.lang.reflect.Array;
 import java.util.Optional;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Optional;
  */
 public class DoubleHashTable<K, V> {
   
-	int size;
+	private Object[] storage;
 
   /**
    * Diese Methode implementiert h(x, i).
@@ -22,9 +23,7 @@ public class DoubleHashTable<K, V> {
    * @return der generierte Hash
    */
   private int hash(K key, int i) {
-    /*
-     * Todo
-     */
+	  
   }
 
   /**
@@ -35,7 +34,14 @@ public class DoubleHashTable<K, V> {
    * @param hashableFactory Fabrik, die aus einer Größe ein DoubleHashable<K>-Objekt erzeugt.
    */
   public DoubleHashTable(int primeSize, HashableFactory<K> hashableFactory) {
-    this.size = primeSize;
+	  storage = new Object[primeSize];
+    if (hashableFactory.getClass() == IntHashableFactory.class) {
+    	storage[0] = new DoubleHashInt(primeSize);
+    	System.out.println("War erfolgreich " + storage[0]);
+    } else if (hashableFactory.getClass() == StringHashableFactory.class) {
+    	storage[0] = new DoubleHashString(primeSize);
+    	System.out.println("String gefunden " + storage[0]);
+    }
   }
 
   /**
