@@ -38,12 +38,11 @@ public class DoubleHashString implements DoubleHashable<String> {
 	  int k = bitstring.length()/w;					// Ausrechnen der Anzahl an Teilen
 	  int[] parts = new int[k];						// Erstellen des k-Tupels
 	  createParts(bitstring, parts, w);				// Überführen der einzelnen Bytes in ein k-Tupel
-	  int result = 0;
+	  long result = 0;
 	  for (int i = 0; i < parts.length; i++) {
 		result += parts[i] * a.get(i);
 	  }
 	  result %= m;
-//	  System.out.println("String: " + key + "\nByteValue: " + bitstring + "\nW: " + w + "\nK: " + k + "\nArray: " + printingArray(parts) + "\nErgebnis: " + result + "\n-----------------------------------");
 	  return result;
   }
   
@@ -59,7 +58,6 @@ public class DoubleHashString implements DoubleHashable<String> {
 		  add += hash;													// Anhängen des ursprünglichen Strings, sodass eine Korrekte Bitdarstellung gewährleistet ist
 		  hash = add;													// Ändern der Referenz
 	  }
-//	  System.out.println("Result: " + hash);
 	  return hash;
   }
   
@@ -91,7 +89,7 @@ public class DoubleHashString implements DoubleHashable<String> {
    * @return der Hashwert des Schlüssels
    */
   public long hashTick (String key) {
-    return (1 + key.hashCode()) % (m - 2);
+    return (long)(1 + key.hashCode()) % (m - 2);
   }
   
   private void initilizeA() {

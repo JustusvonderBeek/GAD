@@ -13,6 +13,9 @@ import java.util.Optional;
 public class DoubleHashTable<K, V> {
   
 	private Object[] storage;
+	
+	private DoubleHashInt intHash;
+	private DoubleHashString stringHash;
 
   /**
    * Diese Methode implementiert h(x, i).
@@ -23,7 +26,17 @@ public class DoubleHashTable<K, V> {
    * @return der generierte Hash
    */
   private int hash(K key, int i) {
-	  
+	 int hFlat;
+	 int hTick;
+	 if (key instanceof DoubleHashInt) {
+		 hFlat = (int) intHash.hash((Integer) key);
+		 hTick = (int) intHash.hashTick((Integer) key);
+	 } else {
+		 hFlat = (int) stringHash.hash((String) key);
+		 hTick = (int) stringHash.hashTick((String) key);
+	 }
+	 System.out.println("HFlat: " + hFlat + " HTick: " + hTick + " Result: " + ((hFlat + (i * hTick)) % storage.length));
+	 return (hFlat + (i * hTick)) % storage.length;
   }
 
   /**
@@ -34,14 +47,13 @@ public class DoubleHashTable<K, V> {
    * @param hashableFactory Fabrik, die aus einer Größe ein DoubleHashable<K>-Objekt erzeugt.
    */
   public DoubleHashTable(int primeSize, HashableFactory<K> hashableFactory) {
-	  storage = new Object[primeSize];
-    if (hashableFactory.getClass() == IntHashableFactory.class) {
-    	storage[0] = new DoubleHashInt(primeSize);
-    	System.out.println("War erfolgreich " + storage[0]);
-    } else if (hashableFactory.getClass() == StringHashableFactory.class) {
-    	storage[0] = new DoubleHashString(primeSize);
-    	System.out.println("String gefunden " + storage[0]);
-    }
+	  if (hashableFactory.getClass() == DoubleHashInt.class) {
+		  storage = new DoubleHashInt[primeSize];
+		  intHash = new DoubleHashInt(primeSize);
+	  } else {
+		  storage = new DoubleHashString[primeSize];
+		  stringHash = new DoubleHashString(primeSize);
+	  }
   }
 
   /**
@@ -54,9 +66,16 @@ public class DoubleHashTable<K, V> {
    * Hashtabelle voll ist.
    */
   public boolean insert(K k, V v) {
-    /*
-     * Todo
-     */
+	  int i = 0;
+	  int index = hash(k, i++);
+	  while (storage[index] != null || i < storage.length) {
+		 index = hash(k, i++); 
+	  }
+	  if (storage[index] == null) {
+		  storage[index] = v;
+		  return true;
+	  }
+	  return false;
   }
 
   /**
@@ -92,9 +111,8 @@ public class DoubleHashTable<K, V> {
    * 
    * @return die berechnete Maximalzahl von Aufrufen
    */
+  
   public int maxRehashes() {
-    /*
-     * Todo
-     */
+
   }
 }

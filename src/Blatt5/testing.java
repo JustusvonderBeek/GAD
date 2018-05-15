@@ -33,9 +33,13 @@ public class testing {
 		System.out.println("Test: " + tst2.hash("Test") + " " + ((2*tst2.hash("Test"))%37));
 		
 		
-		DoubleHashTable<String, Integer> table = new DoubleHashTable<>(277, new StringHashableFactory());
+		DoubleHashTable<String, Integer> table = new DoubleHashTable<>(219, new StringHashableFactory());
 		
 		DoubleHashTable<Integer, Integer> table2 = new DoubleHashTable<>(133, new IntHashableFactory());
+	
+		table.insert("Test", 100);
+		
+		
 		
 	}
 

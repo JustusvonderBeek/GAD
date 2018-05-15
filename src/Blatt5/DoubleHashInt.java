@@ -34,7 +34,7 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
   @Override public long hash (Integer key) {
     String bitstring = checkLeadingZero(key.toUnsignedString(key, 2), key);
     int[] tupel = splitIntoArray(bitstring);
-    int result = 0;
+    long result = 0;
     for (int i = 0; i < tupel.length; i++) {
 		result += tupel[i] * a[i];
 	}
@@ -49,7 +49,7 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
    * @return der Hashwert des Schlüssels
    */
   @Override public long hashTick (Integer key) {
-	 return (1 + key) % m -1;
+	 return (long)(1 + key) % m -1;
   }
   
   private String checkLeadingZero(String bitstring, Integer key) {
