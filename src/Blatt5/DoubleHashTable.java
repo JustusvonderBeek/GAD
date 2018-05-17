@@ -1,5 +1,6 @@
 package Blatt5;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -51,6 +52,7 @@ public class DoubleHashTable<K, V> {
 	  storage = new Pair[primeSize];
 	  this.valueCollision = 0;
 	  this.valueRehash = 0;
+	  this.zaehler = 0;
   }
 
   /**
@@ -65,19 +67,19 @@ public class DoubleHashTable<K, V> {
   
   public boolean insert(K k, V v) {
 	  int i = 0;
-	  int index = hash(k, i++);
-	  while (i < storage.length && storage[index] != null) {
+	  int index;
+	  while (i < storage.length) {
 		 index = hash(k, i++);
-	  }
-	  if (this.valueRehash < i) {
-		  this.valueRehash = i;
-	  }
-	  if (i > 1) {
-		  valueCollision++;
-	  }
-	  if (storage[index] == null) {
-		  storage[index] = new Pair<K, V>(k, v);
-		  return true;
+		 if (storage[index] == null) {
+			 storage[index] = new Pair<K, V>(k, v);
+			 if (this.valueRehash < i) {
+				  this.valueRehash = i;
+			  }
+			  if (i > 1) {
+				  valueCollision++;
+			  }
+			  return true;
+		 }
 	  }
 	  return false;
   }
@@ -89,36 +91,44 @@ public class DoubleHashTable<K, V> {
    * @param k der Schlüssel des Elements, nach dem gesucht wird
    * @return der Wert des zugehörigen Elements, sonfern es gefunden wurde
    */
+  
+  private int zaehler;
+  private ArrayList<Integer> aL = new ArrayList<>();
+  
   public Optional<V> find(K k) {
 	  int i = 0;
-	  int valueHash = findNext(k, i);
-	  System.out.println("First ValueHash: " + storage[valueHash]);
-	  while (true) {
-		  Pair<K, V> value = storage[valueHash];
-		  if (value._1.equals(k)) {
-			  System.out.println("Find returns: " + value._2);
-			  return (Optional<V>) Optional.of(value._2);
+	  int valueHash;
+	  Pair<K, V> value;
+	  while (i < storage.length) {
+		  valueHash = hash(k, i++);
+		  equals(valueHash);
+		  aL.add(valueHash);
+		  if (storage[valueHash] != null) {
+			  value = storage[valueHash];
+//			  System.out.println("Zähler: " + (zaehler++) + " 1: " + value._1 + " 2: " + value._2);
+			  if (storage[valueHash]._1 == k) {
+				  System.out.println("Find returns: " + value._2);
+				  return (Optional<V>) Optional.of(value._2);
+			  }
 		  }
-		  i = findNext(k, i);
 		  if (i < 0) {
 			  return Optional.empty();
 		  }
 	  }
+	  return Optional.empty();
 	  
   }
   
-  private int findNext(K k, int i) {
-	  int valueHash = hash(k, i);
-	  while (i < storage.length && storage[valueHash] == null) {
-		  System.out.println("Inner Loop");
-		  valueHash = hash(k, i++);
+  private boolean equals(Integer i) {
+	  for (int j = 0; j < aL.size(); j++) {
+		if (aL.get(j) == i) {
+			System.out.println("Gleich: " + j + ": " + aL.get(j) + " " + i);
+			return true;
+		}
 	  }
-	  if (i >= storage.length) {
-		  return -1;
-	  }
-	  System.out.println("Returns: " + (i-1));
-	  return i;
+	  return false;
   }
+  
   
   /**
    * Diese Methode ermittelt die Anzahl der Kollisionen, also die Anzahl

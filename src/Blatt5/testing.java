@@ -42,6 +42,12 @@ public class testing {
 	
 //		table.insert("Test", 100);
 		
+		String test = "";
+		
+		for (int i = 0; i < 300; i++) {
+			table.insert((test + "T"),(int) Math.random()*50);
+			table.find("---");
+		}
 		
 		
 	}

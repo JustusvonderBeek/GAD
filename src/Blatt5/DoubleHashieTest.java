@@ -35,6 +35,7 @@ public class DoubleHashieTest {
     Iterator<Entry<Integer, Integer>> it = htJava.entrySet().iterator();
     while(it.hasNext()) {
       Entry<Integer, Integer> entry = it.next();
+      System.out.println("Entry: " + entry.getValue() + " " + ht.find(entry.getKey()));
       assertEquals(entry.getValue(), ht.find(entry.getKey()).get());
     }
   }
