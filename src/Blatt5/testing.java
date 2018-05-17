@@ -10,6 +10,9 @@ public class testing {
 		System.out.println("555: " + tst.hash(555));
 		System.out.println("555 Tick: " + tst.hashTick(555));
 		
+		System.out.println("555: " + tst.hash(555));
+		System.out.println("555 Tick: " + tst.hashTick(555));
+		
 		DoubleHashString tst2 = new DoubleHashString(37);
 		
 		System.out.println("24684: " + tst2.hash("24684"));

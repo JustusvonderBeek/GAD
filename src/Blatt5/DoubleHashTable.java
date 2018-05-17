@@ -26,12 +26,12 @@ public class DoubleHashTable<K, V> {
    * @return der generierte Hash
    */
   private int hash(K key, int i) {
-	 int hFlat;
-	 int hTick;
-	 if (key instanceof DoubleHashInt) {
+	 int hFlat = 0;
+	 int hTick = 0;
+	 if (key instanceof Integer) {
 		 hFlat = (int) intHash.hash((Integer) key);
 		 hTick = (int) intHash.hashTick((Integer) key);
-	 } else {
+	 } else if (key instanceof String) {
 		 hFlat = (int) stringHash.hash((String) key);
 		 hTick = (int) stringHash.hashTick((String) key);
 	 }
@@ -47,13 +47,11 @@ public class DoubleHashTable<K, V> {
    * @param hashableFactory Fabrik, die aus einer Größe ein DoubleHashable<K>-Objekt erzeugt.
    */
   public DoubleHashTable(int primeSize, HashableFactory<K> hashableFactory) {
-	  if (hashableFactory.getClass() == DoubleHashInt.class) {
-		  storage = new DoubleHashInt[primeSize];
-		  intHash = new DoubleHashInt(primeSize);
-	  } else {
-		  storage = new DoubleHashString[primeSize];
-		  stringHash = new DoubleHashString(primeSize);
-	  }
+	  intHash = new DoubleHashInt(primeSize);
+	  stringHash = new DoubleHashString(primeSize);
+	  storage = new Integer[primeSize];
+	  this.valueCollision = 0;
+	  this.valueRehash = 0;
   }
 
   /**
@@ -68,11 +66,17 @@ public class DoubleHashTable<K, V> {
   public boolean insert(K k, V v) {
 	  int i = 0;
 	  int index = hash(k, i++);
-	  while (storage[index] != null || i < storage.length) {
-		 index = hash(k, i++); 
+	  while (i < storage.length && storage[index] != null) {
+		 index = hash(k, i++);
+	  }
+	  if (this.valueRehash < i) {
+		  this.valueRehash = i;
+	  }
+	  if (i > 1) {
+		  valueCollision++;
 	  }
 	  if (storage[index] == null) {
-		  storage[index] = v;
+		  storage[index] = (Integer) v;
 		  return true;
 	  }
 	  return false;
@@ -86,9 +90,16 @@ public class DoubleHashTable<K, V> {
    * @return der Wert des zugehörigen Elements, sonfern es gefunden wurde
    */
   public Optional<V> find(K k) {
-    /*
-     * Todo
-     */
+	  int i = 0;
+	  int valueHash = hash(k, i++);
+	  while (i < storage.length && storage[valueHash] == null) {
+		  valueHash = hash(k, i++);
+	  }
+	  if (storage[valueHash] != null) {
+		  return (Optional<V>) Optional.of(storage[valueHash]);
+	  }
+	  return Optional.empty();
+	  
   }
 
   /**
@@ -99,10 +110,11 @@ public class DoubleHashTable<K, V> {
    * 
    * @return die Anzahl der Kollisionen
    */
+  
+  private int valueCollision;
+  
   public int collisions() {
-    /*
-     * Todo
-     */
+	  return this.valueCollision;
   }
  
   /**
@@ -112,7 +124,19 @@ public class DoubleHashTable<K, V> {
    * @return die berechnete Maximalzahl von Aufrufen
    */
   
+  private int valueRehash;
+  
   public int maxRehashes() {
-
+	  return this.valueRehash;
+  }
+  
+  public String toString() {
+	  String result = "";
+	  for (int i = 0; i < storage.length; i++) {
+		if (storage[i] != null) {
+			result += i + ": " + storage[i] + "\n";
+		}
+	  }
+	  return result;
   }
 }

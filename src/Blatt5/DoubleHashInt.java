@@ -49,7 +49,11 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
    * @return der Hashwert des Schlüssels
    */
   @Override public long hashTick (Integer key) {
-	 return (long)(1 + key) % m -1;
+	  int hash = (1 + key) % (m - 1);
+	  if (hash < 0) {
+		  hash *= -1;
+	  }
+	  return hash;
   }
   
   private String checkLeadingZero(String bitstring, Integer key) {

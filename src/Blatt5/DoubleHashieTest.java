@@ -27,6 +27,7 @@ public class DoubleHashieTest {
       
       assertTrue("Unable to insert :-/", ht.insert(key, value));
       htJava.put(key, value);
+      System.out.println(ht);
     }
     
     Iterator<Entry<Integer, Integer>> it = htJava.entrySet().iterator();

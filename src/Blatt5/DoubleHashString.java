@@ -89,7 +89,11 @@ public class DoubleHashString implements DoubleHashable<String> {
    * @return der Hashwert des Schlüssels
    */
   public long hashTick (String key) {
-    return (long)(1 + key.hashCode()) % (m - 2);
+	  long hash = (1 + key.hashCode()) % (m - 2);
+	  if (hash < 0) {
+		  hash *= -1;
+	  }
+	  return hash;
   }
   
   private void initilizeA() {
