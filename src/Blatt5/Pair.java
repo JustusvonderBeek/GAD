@@ -11,7 +11,7 @@ public class Pair<_1, _2> {
   }
 
   public String toString () {
-    return "(" + _1.toString() + "," + _2.toString() + ")";
+    return "(K: " + _1.toString() + ", V: " + _2.toString() + ")";
   }
 
   @Override public boolean equals (Object o) {

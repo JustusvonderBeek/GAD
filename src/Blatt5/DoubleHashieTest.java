@@ -1,6 +1,7 @@
 package Blatt5;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -27,8 +28,9 @@ public class DoubleHashieTest {
       
       assertTrue("Unable to insert :-/", ht.insert(key, value));
       htJava.put(key, value);
-      System.out.println(ht);
     }
+    
+    System.out.println(ht);
     
     Iterator<Entry<Integer, Integer>> it = htJava.entrySet().iterator();
     while(it.hasNext()) {

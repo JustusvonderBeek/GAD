@@ -1,6 +1,5 @@
 package Blatt5;
 
-import java.lang.reflect.Array;
 import java.util.Optional;
 
 /**
@@ -12,7 +11,7 @@ import java.util.Optional;
  */
 public class DoubleHashTable<K, V> {
   
-	private Object[] storage;
+	private Pair<K, V>[] storage;
 	
 	private DoubleHashInt intHash;
 	private DoubleHashString stringHash;
@@ -35,7 +34,7 @@ public class DoubleHashTable<K, V> {
 		 hFlat = (int) stringHash.hash((String) key);
 		 hTick = (int) stringHash.hashTick((String) key);
 	 }
-	 System.out.println("HFlat: " + hFlat + " HTick: " + hTick + " Result: " + ((hFlat + (i * hTick)) % storage.length));
+//	 System.out.println(" HFlat: " + hFlat + " HTick: " + hTick + " Result: " + ((hFlat + (i * hTick)) % storage.length));
 	 return (hFlat + (i * hTick)) % storage.length;
   }
 
@@ -49,7 +48,7 @@ public class DoubleHashTable<K, V> {
   public DoubleHashTable(int primeSize, HashableFactory<K> hashableFactory) {
 	  intHash = new DoubleHashInt(primeSize);
 	  stringHash = new DoubleHashString(primeSize);
-	  storage = new Integer[primeSize];
+	  storage = new Pair[primeSize];
 	  this.valueCollision = 0;
 	  this.valueRehash = 0;
   }
@@ -63,6 +62,7 @@ public class DoubleHashTable<K, V> {
    * @return 'true' falls das einfügen erfolgreich war, 'false' falls die
    * Hashtabelle voll ist.
    */
+  
   public boolean insert(K k, V v) {
 	  int i = 0;
 	  int index = hash(k, i++);
@@ -76,7 +76,7 @@ public class DoubleHashTable<K, V> {
 		  valueCollision++;
 	  }
 	  if (storage[index] == null) {
-		  storage[index] = (Integer) v;
+		  storage[index] = new Pair<K, V>(k, v);
 		  return true;
 	  }
 	  return false;
@@ -91,17 +91,35 @@ public class DoubleHashTable<K, V> {
    */
   public Optional<V> find(K k) {
 	  int i = 0;
-	  int valueHash = hash(k, i++);
-	  while (i < storage.length && storage[valueHash] == null) {
-		  valueHash = hash(k, i++);
+	  int valueHash = findNext(k, i);
+	  System.out.println("First ValueHash: " + storage[valueHash]);
+	  while (true) {
+		  Pair<K, V> value = storage[valueHash];
+		  if (value._1.equals(k)) {
+			  System.out.println("Find returns: " + value._2);
+			  return (Optional<V>) Optional.of(value._2);
+		  }
+		  i = findNext(k, i);
+		  if (i < 0) {
+			  return Optional.empty();
+		  }
 	  }
-	  if (storage[valueHash] != null) {
-		  return (Optional<V>) Optional.of(storage[valueHash]);
-	  }
-	  return Optional.empty();
 	  
   }
-
+  
+  private int findNext(K k, int i) {
+	  int valueHash = hash(k, i);
+	  while (i < storage.length && storage[valueHash] == null) {
+		  System.out.println("Inner Loop");
+		  valueHash = hash(k, i++);
+	  }
+	  if (i >= storage.length) {
+		  return -1;
+	  }
+	  System.out.println("Returns: " + (i-1));
+	  return i;
+  }
+  
   /**
    * Diese Methode ermittelt die Anzahl der Kollisionen, also die Anzahl
    * der Elemente, die nicht an der 'optimalen' Position in die Hashtabelle eingefügt
