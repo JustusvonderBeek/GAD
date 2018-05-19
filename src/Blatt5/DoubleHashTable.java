@@ -1,5 +1,6 @@
 package Blatt5;
 
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -16,7 +17,10 @@ public class DoubleHashTable<K, V> {
 	
 	private DoubleHashInt intHash;
 	private DoubleHashString stringHash;
-
+	
+	private int localI;
+	
+	
   /**
    * Diese Methode implementiert h(x, i).
    * 
@@ -53,6 +57,7 @@ public class DoubleHashTable<K, V> {
 	  this.valueCollision = 0;
 	  this.valueRehash = 0;
 	  this.zaehler = 0;
+	  this.localI = 0;
   }
 
   /**
@@ -68,18 +73,45 @@ public class DoubleHashTable<K, V> {
   public boolean insert(K k, V v) {
 	  int i = 0;
 	  int index;
-	  while (i < storage.length) {
-		 index = hash(k, i++);
-		 if (storage[index] == null) {
-			 storage[index] = new Pair<K, V>(k, v);
-			 if (this.valueRehash < i) {
-				  this.valueRehash = i;
+	  if (find(k) != Optional.empty()) {
+		  index = hash(k, this.localI);
+//		  System.out.println("Altes Feld: " + storage[index] + " wird zu neuem : " + new Pair<>(k, v));
+		  storage[index] = new Pair<>(k, v);
+		  if (valueRehash < this.localI) {
+			  valueRehash = this.localI;
+		  }
+		  if (localI > 1) {
+			  valueCollision++;
+		  }
+		  return true;
+	  } else {
+		  while (i < storage.length) {
+				 index = hash(k, i++);
+				 if (storage[index] != null) {
+//					 if (k.getClass() == String.class) {
+//						 if (storage[index]._1.equals(k)) {
+//							 storage[index] = new Pair<K,V>(k, v);
+//							 return true;
+//						 }
+//					 } else if (k.getClass() == Integer.class) {
+//						 if (Integer.compare((Integer) storage[index]._1, (Integer) k) == 0) {
+//							 System.out.println("Bin im Int Fall");
+//							 storage[index] = new Pair<K,V>(k, v);
+//							 return true;
+//						 }
+//					 }
+				 }
+				 if (storage[index] == null) {
+					 storage[index] = new Pair<K, V>(k, v);
+					 if (this.valueRehash < i) {
+						  this.valueRehash = i;
+					  }
+					  if (i > 1) {
+						  valueCollision++;
+					  }
+					  return true;
+				 }
 			  }
-			  if (i > 1) {
-				  valueCollision++;
-			  }
-			  return true;
-		 }
 	  }
 	  return false;
   }
@@ -93,7 +125,6 @@ public class DoubleHashTable<K, V> {
    */
   
   private int zaehler;
-  private ArrayList<Integer> aL = new ArrayList<>();
   
   public Optional<V> find(K k) {
 	  int i = 0;
@@ -101,32 +132,25 @@ public class DoubleHashTable<K, V> {
 	  Pair<K, V> value;
 	  while (i < storage.length) {
 		  valueHash = hash(k, i++);
-		  equals(valueHash);
-		  aL.add(valueHash);
+//		  System.out.println("Iteration: " + zaehler + " Hash Index: " + valueHash + " mit " + storage[valueHash]);
 		  if (storage[valueHash] != null) {
 			  value = storage[valueHash];
-//			  System.out.println("Zähler: " + (zaehler++) + " 1: " + value._1 + " 2: " + value._2);
-			  if (storage[valueHash]._1 == k) {
-				  System.out.println("Find returns: " + value._2);
-				  return (Optional<V>) Optional.of(value._2);
+			  if (k.getClass() == String.class) {
+				  if (storage[valueHash]._1.equals(k)) {
+					  this.localI = i-1;
+					  return (Optional<V>) Optional.of(value._2);
+				  }
+			  } else if (k.getClass() == Integer.class) {
+				  if (Integer.compare((Integer) storage[valueHash]._1, (Integer) k) == 0) {
+					  this.localI = i-1;
+					  return (Optional<V>) Optional.of(value._2);
+				  }
 			  }
 		  }
-		  if (i < 0) {
-			  return Optional.empty();
-		  }
+//		  zaehler++;
 	  }
 	  return Optional.empty();
 	  
-  }
-  
-  private boolean equals(Integer i) {
-	  for (int j = 0; j < aL.size(); j++) {
-		if (aL.get(j) == i) {
-			System.out.println("Gleich: " + j + ": " + aL.get(j) + " " + i);
-			return true;
-		}
-	  }
-	  return false;
   }
   
   

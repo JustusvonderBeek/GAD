@@ -1,5 +1,6 @@
 package Blatt5;
 
+
 /**
  * Die Klasse {@link DoubleHashInt} kann dazu verwendet werden,
  * Integer zu hashen.

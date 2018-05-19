@@ -1,5 +1,6 @@
 package Blatt5;
 
+
 public class testing {
 
 	public static void main(String[] args) {
@@ -45,8 +46,9 @@ public class testing {
 		String test = "";
 		
 		for (int i = 0; i < 300; i++) {
-			table.insert((test + "T"),(int) Math.random()*50);
-			table.find("---");
+			table.insert(test,(int) Math.random()*50);
+			table.find("TTT");
+			test += "T";
 		}
 		
 		

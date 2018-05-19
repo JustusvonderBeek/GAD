@@ -1,6 +1,7 @@
 package Blatt5;
 
 
+
 /**
  * Dieses Interface beschreibt eine Fabrik, die aus
  * einer Größe ein Hashable<K>-Objekt erzeugt.

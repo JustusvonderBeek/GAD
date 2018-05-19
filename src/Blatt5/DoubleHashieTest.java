@@ -1,5 +1,6 @@
 package Blatt5;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,12 +31,9 @@ public class DoubleHashieTest {
       htJava.put(key, value);
     }
     
-    System.out.println(ht);
-    
     Iterator<Entry<Integer, Integer>> it = htJava.entrySet().iterator();
     while(it.hasNext()) {
       Entry<Integer, Integer> entry = it.next();
-      System.out.println("Entry: " + entry.getValue() + " " + ht.find(entry.getKey()));
       assertEquals(entry.getValue(), ht.find(entry.getKey()).get());
     }
   }
