@@ -34,7 +34,7 @@ public class DoubleHashTable<K, V> {
 	 int hTick = 0;
 	 if (key instanceof Integer) {
 		 hFlat = (int) intHash.hash((Integer) key);
-		 hTick = (int) intHash.hashTick((Integer) key);
+		 hTick = (int) intHash.hashTick((Integer) key);				// Berechnet h und h' für die eingegebenen Werte und unterscheidet dabei zwischen Integern und Strings.
 	 } else if (key instanceof String) {
 		 hFlat = (int) stringHash.hash((String) key);
 		 hTick = (int) stringHash.hashTick((String) key);
@@ -56,8 +56,8 @@ public class DoubleHashTable<K, V> {
 	  storage = new Pair[primeSize];
 	  this.valueCollision = 0;
 	  this.valueRehash = 0;
-	  this.zaehler = 0;
-	  this.localI = 0;
+	  this.zaehler = 0;					// Nur für Debugzwecke benutzt.
+	  this.localI = 0;					// Zählt die lokalen I mit für die Methoden insert und find
   }
 
   /**
@@ -68,6 +68,11 @@ public class DoubleHashTable<K, V> {
    * @param v der Wert des Elements, das eingefügt wird
    * @return 'true' falls das einfügen erfolgreich war, 'false' falls die
    * Hashtabelle voll ist.
+   */
+  
+  /*
+   * Da die Methode alte Werte überschreiben können soll, muss sie zunächst das ganze Feld nach möglichen alten Werten durchsuchen um diese zu ersetzen.
+   * Wird ein alter Wert gefunden, dann wird dieser Überschrieben, sollte keiner gefunden werden, dann wird an der ersten freien stelle der Wert eingefügt.
    */
   
   public boolean insert(K k, V v) {
@@ -87,20 +92,6 @@ public class DoubleHashTable<K, V> {
 	  } else {
 		  while (i < storage.length) {
 				 index = hash(k, i++);
-				 if (storage[index] != null) {
-//					 if (k.getClass() == String.class) {
-//						 if (storage[index]._1.equals(k)) {
-//							 storage[index] = new Pair<K,V>(k, v);
-//							 return true;
-//						 }
-//					 } else if (k.getClass() == Integer.class) {
-//						 if (Integer.compare((Integer) storage[index]._1, (Integer) k) == 0) {
-//							 System.out.println("Bin im Int Fall");
-//							 storage[index] = new Pair<K,V>(k, v);
-//							 return true;
-//						 }
-//					 }
-				 }
 				 if (storage[index] == null) {
 					 storage[index] = new Pair<K, V>(k, v);
 					 if (this.valueRehash < i) {
@@ -124,7 +115,12 @@ public class DoubleHashTable<K, V> {
    * @return der Wert des zugehörigen Elements, sonfern es gefunden wurde
    */
   
-  private int zaehler;
+  private int zaehler;	// Zu Debugzwecken
+  
+  /*
+   * Die Methode geht alle Werte von i für einen Schlüssel k durch, so lange bis entweder der Wert gefunden wurde, oder das Feld einmal komplett durchlaufen wurde
+   * Sollte dann kein Wert gefunden worden sein, wird Optional.empty zurückgegeben, sonst der Value an der Stelle.
+   */
   
   public Optional<V> find(K k) {
 	  int i = 0;
@@ -181,6 +177,11 @@ public class DoubleHashTable<K, V> {
   public int maxRehashes() {
 	  return this.valueRehash;
   }
+  
+  
+  /*
+   * Debugmethode
+   */
   
   public String toString() {
 	  String result = "";

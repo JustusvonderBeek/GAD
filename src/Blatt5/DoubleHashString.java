@@ -40,6 +40,7 @@ public class DoubleHashString implements DoubleHashable<String> {
 	  int[] parts = new int[k];						// Erstellen des k-Tupels
 	  createParts(bitstring, parts, w);				// Überführen der einzelnen Bytes in ein k-Tupel
 	  long result = 0;
+	  checkA();
 	  for (int i = 0; i < parts.length; i++) {
 		result += parts[i] * a.get(i);
 	  }
@@ -66,8 +67,8 @@ public class DoubleHashString implements DoubleHashable<String> {
 	  int lowerIndex = 0;
 	  int higherIndex = w;
 	  for (int i = 0; i < parts.length; i++) {
-		 String substring = string.substring(lowerIndex, higherIndex);	// Erzeugen von Substrings
-		 parts[i] = byteToInteger(substring);							// Einfügen der vorher berechneten w Bitwerte in das Array
+		 String substring = string.substring(lowerIndex, higherIndex);
+		 parts[i] = byteToInteger(substring);							// Aufteilen des einen Bitstrings der den String repräsentiert in k-Tupel mit Dezimalwert
 		 lowerIndex = higherIndex;
 		 higherIndex += w;
 	  }
@@ -90,9 +91,9 @@ public class DoubleHashString implements DoubleHashable<String> {
    * @return der Hashwert des Schlüssels
    */
   public long hashTick (String key) {
-	  long hash = (1 + key.hashCode()) % (m - 2);
+	  long hash = (1 + key.hashCode()) % (m - 2);		// Hashtick Funktion: h(x) = 1 + key mod m - 2
 	  if (hash < 0) {
-		  hash *= -1;
+		  hash *= -1;									// Invertiert bei negativen Zahlen
 	  }
 	  return hash;
   }
@@ -100,7 +101,13 @@ public class DoubleHashString implements DoubleHashable<String> {
   private void initilizeA() {
 	  this.a = new ArrayList<>();
 	  for (int i = 0; i < k; i++) {
-		a.add(((int)(Math.random()*m) + 1) % m);
+		a.add(((int)(Math.random()*m) + 1) % m);		// Erstellt den Standart k-Tupel
+	  }
+  }
+  
+  private void checkA() {
+	  while (a.size() <= this.k) {
+		  a.add(((int) (Math.random()*m) + 1) % m);		// Fügt neue Stellen hinzu, falls das Tupel zu klein sein sollte.
 	  }
   }
 }

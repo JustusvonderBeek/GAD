@@ -1,5 +1,6 @@
 package Blatt5;
 
+import java.util.ArrayList;
 
 /**
  * Die Klasse {@link DoubleHashInt} kann dazu verwendet werden,
@@ -10,7 +11,7 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
 	private int m;
 	private int k;
 	private int w;
-	private int[] a;
+	private ArrayList<Integer> a;
 
   /**
    * Dieser Konstruktor initialisiert ein {@link DoubleHashInt}
@@ -33,11 +34,12 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
    * @return der Hashwert des Schlüssels
    */
   @Override public long hash (Integer key) {
-    String bitstring = checkLeadingZero(key.toUnsignedString(key, 2), key);
+    String bitstring = checkLeadingZero(key.toUnsignedString(key, 2), key);			// Der Integer wird in Bitrepräsentation geändert und bearbeitet
     int[] tupel = splitIntoArray(bitstring);
     long result = 0;
+    checkA(tupel.length);
     for (int i = 0; i < tupel.length; i++) {
-		result += tupel[i] * a[i];
+		result += tupel[i] * a.get(i);												// Und mit dem erstellten k-Tupel multipliziert
 	}
     result %= m;
     return result;
@@ -50,12 +52,16 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
    * @return der Hashwert des Schlüssels
    */
   @Override public long hashTick (Integer key) {
-	  int hash = (1 + key) % (m - 1);
-	  if (hash < 0) {
+	  int hash = (1 + key) % (m - 1);					// Die Hashfunktion h(x) = 1 + k mod m - 1
+	  if (hash < 0) {									// für negative Werte wird sie hier positiv gemacht, damit der Index beim einfügen passt
 		  hash *= -1;
 	  }
 	  return hash;
   }
+  
+  /*
+   * Diese Methode überprüft die gegebene Zahl auf führende Nullen und fügt falls sie fehlen sollten genügend an, damit die Zahl auf Integergröße erweitert wird.
+   */
   
   private String checkLeadingZero(String bitstring, Integer key) {
 	  String adding = "";
@@ -71,6 +77,10 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
 	  return adding;
   }
   
+  /*
+   * Die Methode nimmt einen String mit Nullen und Einsen und teilt die Teile in ein k-Tupel auf.
+   */
+  
   private int[] splitIntoArray(String bitstring) {
 	  int[] tupel = new int[k];
 	  int lowerIndex = 0;
@@ -83,6 +93,10 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
 	  }
 	  return tupel;
   }
+  
+  /*
+   * Die Methode nimmt ebenfalls einen String, der eine Binärzahl repäsentiert und macht daraus wieder einen Dezimalwert.
+   */
   
   private int byteToInteger(String string) {
 	  int result = 0;
@@ -99,8 +113,8 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
 	  result += "K: " + this.k + "\n";
 	  result += "W: " + this.w + "\n";
 	  result += "A: ";
-	  for (int i = 0; i < a.length; i++) {
-		result += a[i] + " | ";
+	  for (int i = 0; i < a.size(); i++) {
+		result += a.get(i) + " | ";
 	  }
 	  result += "\n";
 	  return result;
@@ -108,9 +122,15 @@ public class DoubleHashInt implements DoubleHashable<Integer> {
   }
   
   private void initilizeA() {
-	  this.a = new int[k];
-	  for (int i = 0; i < a.length; i++) {
-		this.a[i] =  ((int) (Math.random()*m) + 1) % m;
+	  this.a = new ArrayList<>();
+	  for (int i = 0; i < 32; i++) {
+		a.add(((int) (Math.random()*m) + 1) % m);		// initialisiere ein k - Tupel aus zufälligen Zahlen, standartmäßig gehe ich davon aus, dass ich maximal 32 Stellen brauche.
+	  }
+  }
+  
+  private void checkA(int k) {
+	  while (a.size() <= k) {
+		  a.add(((int) (Math.random()*m) + 1) % m);		// Fügt neue Stellen hinzu, falls das Tupel zu klein sein sollte.
 	  }
   }
 

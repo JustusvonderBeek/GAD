@@ -1,5 +1,6 @@
 package Blatt5;
 
+
 public interface DoubleHashable<K> {
   /**
    * Diese Methode implementiert h(key).
