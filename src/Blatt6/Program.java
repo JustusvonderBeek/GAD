@@ -1,3 +1,5 @@
+package Blatt6;
+
 import java.util.Random;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -5,7 +7,7 @@ import java.util.LinkedList;
 public class Program {
 	public static void main(String[] args) {
 		// Anzahl der zu sortierenden Elemente
-		// int n = 10;
+		 int n = 10;
 		// int n = 100;
 		// int n = 1000;
 		// int n = 10000;
