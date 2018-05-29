@@ -18,20 +18,30 @@ public class Program {
 		// TODO: Zahlen für den Vergleich vorbereiten
 		Random r = new Random();
 		int[] numbers = new int[n];
+		int base = r.nextInt();
+		int increment = r.nextInt();
+		int inverse = r.nextInt();
+		int decrement = r.nextInt();
+		if (inverse/(numbers.length*decrement) < numbers.length) {
+			
+		}
 		for (int i = 0; i < n; i++) {
 			// Mit zufälligen Zahlen initialisieren
-			//numbers[i] = ...
+			numbers[i] = r.nextInt();
 
 			// Mit bereits sortierten Zahlen initialisieren
-			//numbers[i] = ...
+			base += increment;
+			numbers[i] = base;
 
 			// Mit invers sortierten Zahlen initialisieren
-			//numbers[i] = ...
+			inverse -= decrement;
+			numbers[i] = inverse;
 		}
 		printArray("vorher: ", numbers);
 
 		LinkedList<SortingBase> implementations = new LinkedList<SortingBase>();
-		// TODO: Hier alle Implementierungen hinzufügen
+		implementations.add(new Mergesort());
+		implementations.add(new Quicksort());
 
 		for (SortingBase sorter : implementations) {
 			int[] numbersImpl = Arrays.copyOf(numbers, n);
