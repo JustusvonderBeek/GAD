@@ -7,35 +7,26 @@ import java.util.LinkedList;
 public class Program {
 	public static void main(String[] args) {
 		// Anzahl der zu sortierenden Elemente
-		 int n = 10;
-		// int n = 100;
-		// int n = 1000;
-		// int n = 10000;
-		// int n = 100000;
-		// int n = 1000000;
-		// int n = 10000000;
+//		 int n = 10;
+//		 int n = 100;
+//		 int n = 1000;
+//		 int n = 10000;
+//		 int n = 100000;
+//		 int n = 1000000;
+		 int n = 10000000;
 
 		// TODO: Zahlen für den Vergleich vorbereiten
 		Random r = new Random();
 		int[] numbers = new int[n];
-		int base = r.nextInt();
-		int increment = r.nextInt();
-		int inverse = r.nextInt();
-		int decrement = r.nextInt();
-		if (inverse/(numbers.length*decrement) < numbers.length) {
-			
-		}
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < n; i++) {						// Zum einfacheren Auskommentieren sind die Befehle in eine Zeile geschrieben
 			// Mit zufälligen Zahlen initialisieren
-			numbers[i] = r.nextInt();
+//			numbers[i] = r.nextInt(n*4);
 
 			// Mit bereits sortierten Zahlen initialisieren
-			base += increment;
-			numbers[i] = base;
+			numbers[i] = (n-n) + i;
 
 			// Mit invers sortierten Zahlen initialisieren
-			inverse -= decrement;
-			numbers[i] = inverse;
+//			numbers[i] = n - i;
 		}
 		printArray("vorher: ", numbers);
 

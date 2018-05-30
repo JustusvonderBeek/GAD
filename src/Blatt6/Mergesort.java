@@ -2,36 +2,36 @@ package Blatt6;
 
 public class Mergesort implements SortingBase {
 	public void sort(int[] numbers) {
-		mergeSort(numbers, 0, numbers.length);
+		mergeSort(numbers, 0, numbers.length-1);
 	}
 
 	private void mergeSort(int [] numbers, int l, int r) {
-		if (l >= r) {
+		if (l == r) {				// Rekursionsabbruch
 			return;
 		}
-		int m = (l + r) / 2;
-		mergeSort(numbers, l, m);
-		mergeSort(numbers, m+1, r);
-		int k = l;					// linke Teilhälfte
-		int i = m+1;				// rechte Teilhälfte
-		int[] b = new int[numbers.length];
-		for (int j = 0; j <= r-l; j++) {
-			if(k > m) {
-				b[j] = numbers[i];		// wenn die kleinere Hälfte keine Elemente mehr enthält, schreiben wir die Elemente der größeren Hälfte in das Feld
-				i++;
-			} else if (i > r) {
-				b[j] = numbers[k];		// wenn wir über das Feld hinausgelaufen sind, schreiben wir nur noch den kleineren Teil in das Feld
-				k++;
-			} else if (numbers[k] <= numbers[i]) {
-				b[j] = numbers[k];
-				k++;
+		int middle = (l + r) / 2;			// Mittelwertsbrechnung
+		mergeSort(numbers, l, middle);		// linke Teilhälfte
+		mergeSort(numbers, middle+1, r);	// rechte Teilhälfte
+		int lIndex = l;						// Index der linken Hälfte
+		int rIndex = middle+1;				// Index der rechten Hälfte
+		int[] b = new int[r-l+1];
+		for (int i = 0; i <= (r-l); i++) {
+			if(lIndex > middle) {
+				b[i] = numbers[rIndex];		// wenn die kleinere Hälfte keine Elemente mehr enthält, schreiben wir die Elemente der größeren Hälfte in das Feld
+				rIndex++;
+			} else if (rIndex > r) {
+				b[i] = numbers[lIndex];		// wenn wir über das Feld hinausgelaufen sind, schreiben wir nur noch den kleineren Teil in das Feld
+				lIndex++;
+			} else if (numbers[lIndex] <= numbers[rIndex]) {
+				b[i] = numbers[lIndex];
+				lIndex++;
 			} else {
-				b[j] = numbers[i];
-				i++;
+				b[i] = numbers[rIndex];
+				rIndex++;
 			}
 		}
-		for (int j = 0; j < r - l; j++) {
-			numbers[l+j] = b[j];
+		for (int i = 0; i <= (r-l); i++) {
+			numbers[l+i] = b[i];
 		}
 		
 	}
