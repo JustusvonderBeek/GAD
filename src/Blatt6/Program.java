@@ -1,4 +1,3 @@
-package Blatt6;
 
 import java.util.Random;
 import java.util.Arrays;
@@ -20,10 +19,10 @@ public class Program {
 		int[] numbers = new int[n];
 		for (int i = 0; i < n; i++) {						// Zum einfacheren Auskommentieren sind die Befehle in eine Zeile geschrieben
 			// Mit zufälligen Zahlen initialisieren
-//			numbers[i] = r.nextInt(n*4);
+			numbers[i] = r.nextInt(n*4);
 
 			// Mit bereits sortierten Zahlen initialisieren
-			numbers[i] = (n-n) + i;
+//			numbers[i] = (n-n) + i;
 
 			// Mit invers sortierten Zahlen initialisieren
 //			numbers[i] = n - i;
