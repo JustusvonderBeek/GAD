@@ -1,3 +1,4 @@
+package Blatt6;
 
 public class Mergesort implements SortingBase {
 	public void sort(int[] numbers) {

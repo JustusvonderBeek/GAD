@@ -1,3 +1,4 @@
+package Blatt6;
 
 public class Quicksort implements SortingBase {
 	public void sort(int[] numbers) {

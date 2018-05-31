@@ -1,3 +1,4 @@
+package Blatt6;
 
 import java.util.Random;
 import java.util.Arrays;

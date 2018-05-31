@@ -1,3 +1,4 @@
+package Blatt6;
 
 interface SortingBase {
 	public void sort(int[] numbers);
