@@ -9,7 +9,7 @@ public class RadixSort {
 		}
 		String stringVal = element.toString();
 		if (digit > stringVal.length() - 1) {
-			throw new RuntimeException("Indize von Digit in Key stimmt nicht.");
+			return 0;
 		}
 		String stringDig = "" + stringVal.charAt(stringVal.length() - digit - 1);
 		int result = Integer.parseInt(stringDig);
@@ -46,7 +46,7 @@ public class RadixSort {
 	}
 
 	public void sort(Integer[] elements) {
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 10; i++) {
 			kSort(elements, i);
 		}
 	}

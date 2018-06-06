@@ -10,7 +10,7 @@ public class RadixchenTest {
 		RadixSort sort = new RadixSort();
 
 		while (scanner.hasNextInt()) {
-			System.out.println(scanner.next());
+//			System.out.println(scanner.next());
 			eingabe.add(scanner.nextInt());
 		}
 
