@@ -1,17 +1,15 @@
 package Blatt8;
 
+import java.util.ArrayList;
+
 public class BinomialTreeNode {
 	
 	private int key;
-	private BinomialTreeNode rightChild;
-	private BinomialTreeNode leftChild;
-	private BinomialTreeNode parent;
+	private ArrayList<BinomialTreeNode> children;
 	
 	public BinomialTreeNode(int key) {
 		this.key = key;
-		this.leftChild = null;
-		this.rightChild = null;
-		this.parent = null;
+		children = new ArrayList<>();
 	}
 
 	/**
@@ -21,11 +19,7 @@ public class BinomialTreeNode {
 	 */
 	
 	public int min() {
-		BinomialTreeNode tmp = this;
-		while (tmp.parent != null) {
-			tmp = tmp.parent;
-		}
-		return tmp.key;
+		return this.key;
 	}
 
 	/**
@@ -34,13 +28,7 @@ public class BinomialTreeNode {
 	 * @return der Rang des Teilbaumes
 	 */
 	public int rank() {
-		int counter = 0;
-		BinomialTreeNode tmp = this;
-		while (tmp.parent != null) {
-			tmp = tmp.parent;
-			counter++;
-		}
-		return counter;
+		return this.children.size();
 	}
 
 	/**
@@ -51,14 +39,8 @@ public class BinomialTreeNode {
 	 * @return die Menge von Teilbäumen
 	 */
 	public BinomialTreeNode[] deleteMin() {
-		BinomialTreeNode tmp = this;
-		while (tmp.parent != null) {
-			tmp = tmp.parent;
-		}
-		BinomialTreeNode[] result = new BinomialTreeNode[2];
-		result[0] = tmp.leftChild;
-		result[1] = tmp.rightChild;
-		return result;
+		BinomialTreeNode[] tmp = new BinomialTreeNode[children.size()];
+		return this.children.toArray(tmp);
 	}
 
 	/**
@@ -69,6 +51,15 @@ public class BinomialTreeNode {
 	 * @return denjenigen der beiden Bäume, an den der andere angehängt wurde
 	 */
 	public static BinomialTreeNode merge(BinomialTreeNode a, BinomialTreeNode b) {
-		return null;
+		if (a.rank() != b.rank()) {
+			throw new RuntimeException("Wrong rank!");
+		}
+		if (a.min() > b.min()) {
+			b.children.add(a);
+			return b;
+		} else {
+			a.children.add(b);
+			return a;
+		}
 	}
 }

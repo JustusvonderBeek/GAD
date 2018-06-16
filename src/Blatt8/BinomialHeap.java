@@ -6,8 +6,13 @@ public class BinomialHeap {
 	/**
 	 * Dieser Konstruktor baut einen leeren Haufen.
 	 */
+	
+	private ArrayList<BinomialTreeNode> trees;
+	private BinomialTreeNode min;
+	
 	public BinomialHeap() {
-		// TODO
+		trees = new ArrayList<>();
+		min = new BinomialTreeNode(Integer.MAX_VALUE);
 	}
 
 	/**
@@ -17,7 +22,10 @@ public class BinomialHeap {
 	 * @return das minimale Element
 	 */
 	public int min() {
-		// TODO
+		if (trees.size() <= 0) {
+			throw new RuntimeException("Heap is empty");
+		}
+		return this.min.min();
 	}
 
 	/**
@@ -26,7 +34,40 @@ public class BinomialHeap {
 	 * @param key der einzufügende Schlüssel
 	 */
 	public void insert(int key) {
-		// TODO
+		ArrayList<BinomialTreeNode> tmpA = new ArrayList<>();
+		BinomialTreeNode tmp = new BinomialTreeNode(key);
+		tmpA.add(tmp);
+		merge(tmpA);
+		if (key < this.min.min()) {
+			this.min = tmp;
+		}
+	}
+	
+	private void merge (ArrayList<BinomialTreeNode> a) {
+		for (BinomialTreeNode element : a) {
+			int i = element.rank();
+			if (trees.size() < i) {
+				trees.add(element);
+			} else {
+				int l = 0;
+				while (trees.get(l).rank() < i && trees.size() > l) {
+					l++;
+				}
+				if (l < trees.size()) {
+					BinomialTreeNode tmp = trees.get(l);
+					BinomialTreeNode tmpHead = tmp.merge(tmp, element);
+					if (trees.size() <= l+1) {
+						trees.add(tmpHead);
+					} else {
+						ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
+						tmpList.add(tmpHead);
+						merge(tmpList);
+					}
+				} else {
+					trees.add(element);
+				}
+			}
+		}
 	}
 
 	/**
@@ -36,6 +77,17 @@ public class BinomialHeap {
 	 * @return das minimale Element
 	 */
 	public int deleteMin() {
-		// TODO
+		if (trees.isEmpty()) {
+			throw new RuntimeException("Heap is empty");
+		}
+		BinomialTreeNode tmp = trees.get(0);
+		int min = tmp.min();
+		BinomialTreeNode[] tmpArray = tmp.deleteMin();
+		ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
+		for (int j = 0; j < tmpArray.length; j++) {
+			tmpList.add(tmpArray[j]);
+		}
+		merge(tmpList);
+		return min;
 	}
 }
