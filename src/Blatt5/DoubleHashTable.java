@@ -126,7 +126,7 @@ public class DoubleHashTable<K, V> {
 	  int i = 0;
 	  int valueHash;
 	  Pair<K, V> value;
-	  while (i < storage.length) {
+	  while (i < maxRehashes()) {
 		  valueHash = hash(k, i++);
 //		  System.out.println("Iteration: " + zaehler + " Hash Index: " + valueHash + " mit " + storage[valueHash]);
 		  if (storage[valueHash] != null) {
