@@ -8,7 +8,7 @@ public class BinomialHeap {
 	 */
 	
 	private ArrayList<BinomialTreeNode> trees;
-	private BinomialTreeNode min;
+	private BinomialTreeNode min;				// sortiert gehalten
 	
 	public BinomialHeap() {
 		trees = new ArrayList<>();
@@ -34,37 +34,48 @@ public class BinomialHeap {
 	 * @param key der einzufügende Schlüssel
 	 */
 	public void insert(int key) {
-		ArrayList<BinomialTreeNode> tmpA = new ArrayList<>();
+		ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
 		BinomialTreeNode tmp = new BinomialTreeNode(key);
-		tmpA.add(tmp);
-		merge(tmpA);
-		if (key < this.min.min()) {
+		tmpList.add(tmp);
+		merge(tmpList);
+		if (key < min()) {
 			this.min = tmp;
 		}
 	}
 	
 	private void merge (ArrayList<BinomialTreeNode> a) {
 		for (BinomialTreeNode element : a) {
-			int i = element.rank();
-			if (trees.size() < i) {
-				trees.add(element);
-			} else {
-				int l = 0;
-				while (trees.get(l).rank() < i && trees.size() > l) {
-					l++;
+			int rg = element.rank();
+			if (rg > trees.size() - 1) {
+				while (trees.size() < rg) {
+					trees.add(null);
 				}
-				if (l < trees.size()) {
-					BinomialTreeNode tmp = trees.get(l);
-					BinomialTreeNode tmpHead = tmp.merge(tmp, element);
-					if (trees.size() <= l+1) {
+				trees.add(element);
+			} else if (rg == trees.size() - 1) {
+				if (trees.get(trees.size() - 1) == null) {
+					trees.set(trees.size() - 1, element);
+				} else {
+					BinomialTreeNode tmp = trees.get(trees.size() - 1);
+					BinomialTreeNode tmpHead = BinomialTreeNode.merge(tmp, element);
+					trees.set(trees.size() - 1, null);
+					trees.add(tmpHead);
+				}
+			} else {		// rg < trees.size() - 1
+				if (trees.get(rg) == null) {
+					trees.set(rg, element);
+				} else {
+					BinomialTreeNode tmp = trees.get(rg);
+					BinomialTreeNode tmpHead = BinomialTreeNode.merge(tmp, element);
+					trees.set(rg, null);
+					if (trees.size() - 1 < rg + 1) {
 						trees.add(tmpHead);
+					} else if (trees.get(rg + 1) == null) {
+						trees.set(rg + 1, tmpHead);
 					} else {
 						ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
 						tmpList.add(tmpHead);
 						merge(tmpList);
 					}
-				} else {
-					trees.add(element);
 				}
 			}
 		}
@@ -80,14 +91,41 @@ public class BinomialHeap {
 		if (trees.isEmpty()) {
 			throw new RuntimeException("Heap is empty");
 		}
-		BinomialTreeNode tmp = trees.get(0);
-		int min = tmp.min();
-		BinomialTreeNode[] tmpArray = tmp.deleteMin();
-		ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
-		for (int j = 0; j < tmpArray.length; j++) {
-			tmpList.add(tmpArray[j]);
+		int i = 0;
+		while (i < trees.size() - 1 && trees.get(i) != this.min) {
+			i++;
 		}
-		merge(tmpList);
+		BinomialTreeNode tmp = trees.get(i);
+		int min = min();
+		BinomialTreeNode[] tmpArray = tmp.deleteMin();
+		trees.set(i, null);
+		ArrayList<BinomialTreeNode> tmpList = new ArrayList<>();
+		BinomialTreeNode newMin = null;
+		if (tmpArray.length > 0) {
+			for (int j = 0; j < tmpArray.length; j++) {
+				tmpList.add(tmpArray[j]);
+			}
+			merge(tmpList);
+		}
+		i = 0;
+		while (i < trees.size() && trees.get(i) == null) {
+			i++;
+		}
+		if (i < trees.size()) {
+			newMin = trees.get(i);
+			for (int j = i; j < trees.size(); j++) {
+				if (trees.get(j) == null) {
+					continue;
+				}
+				if (newMin.min() > trees.get(j).min()) {
+					newMin = trees.get(j);	
+				}
+			}
+		}
+		if (trees.get(trees.size() - 1) == null) {
+			trees.remove(trees.size() - 1);
+		}
+		this.min = newMin;
 		return min;
 	}
 }
