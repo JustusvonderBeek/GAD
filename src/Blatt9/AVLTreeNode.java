@@ -1,5 +1,3 @@
-package Blatt9;
-
 /**
  * Diese Klasse implementiert einen Knoten in einem AVL-Baum.
  */
@@ -31,22 +29,7 @@ public class AVLTreeNode {
 	 * @return die ermittelte Höhe
 	 */
 	public int height() {
-		if (left == null && right == null) {
-			return 0;
-		}
-		if (left == null) {
-			return right.height() + 1;
-		}
-		if (right == null) {
-			return left.height() + 1;
-		}
-		int l = left.height();
-		int r = right.height();
-		if (l > r) {
-			return l;
-		} else {
-			return r;
-		}
+		// TODO...
 	}
 
 	public boolean validAVL() {
