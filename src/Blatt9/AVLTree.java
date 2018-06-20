@@ -38,8 +38,12 @@ public class AVLTree {
 	public void insert(int key) {
 		if (this.root == null) {
 			this.root = new AVLTreeNode(key);
+		} else {
+			AVLTreeNode tmp = this.root.insert(key);
+			if (tmp != this.root) {
+				root = tmp;
+			}
 		}
-		this.root.insert(key);
 	}
 
 	/**

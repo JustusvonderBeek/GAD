@@ -65,27 +65,32 @@ public class AVLTreeNode {
 		this.balance = balance;
 	}
 
-	private void calcBalance() {
+	private void updateBalance() {								// Updated die Balance für alle Teilbäume unterhalb dieses Knotens
 		if (this.left == null && this.right == null) {
 			setBalance(0);
 			return;
 		}
 		if (this.left == null) {
 			setBalance(this.right.height() + 1);
+			this.right.updateBalance();
 			return;
 		}
 		if (this.right == null) {
-			setBalance((-1) * (this.left.height() + 1));
+			setBalance(-(this.left.height() + 1));
+			this.left.updateBalance();
 			return;
 		}
 		int l = this.left.height() + 1;
 		int r = this.right.height() + 1;
 		setBalance(r - l);
+		this.left.updateBalance();
+		this.right.updateBalance();
 	}
 	
 	
-	public boolean validAVL() {
+	public boolean validAVL() {										// prüft auf die Korrektness im Baum
 		if (getBalance() >= 2 || getBalance() <= -2) {
+			System.out.println("Wrong Balance");
 			return false;
 		}
 		if (this.left == null && this.right == null) {
@@ -93,28 +98,30 @@ public class AVLTreeNode {
 		}
 		if (this.left == null) {
 			if (this.right.getKey() < getKey()) {
+				System.out.println("Key rechts " + this.right.getKey() + " ist kleiner als " + getKey());
 				return false;
 			}
 			return this.right.validAVL();
 		}
 		if (this.right == null) {
 			if (this.left.getKey() > getKey()) {
+				System.out.println("Key links " + this.left.getKey() + " ist größer als " + getKey());
 				return false;
 			}
 			return this.left.validAVL();
 		}
-		if (this.left != null && this.right != null) {
-			if (this.left.getKey() > getKey()) {
-				return false;
-			}
-			if (this.right.getKey()< getKey()) {
-				return false;
-			}
-			if (this.left.validAVL()) {
-				return this.right.validAVL();
-			}
+		if (this.left.getKey() > getKey()) {
+			System.out.println("Key links " + this.left.getKey() + " ist größer als " + getKey());
 			return false;
 		}
+		if (this.right.getKey() < getKey()) {
+			System.out.println("Key rechts " + this.right.getKey() + " ist kleiner als " + getKey());
+			return false;
+		}
+		if (this.left.validAVL()) {
+			return this.right.validAVL();
+		}
+		System.out.println("Not left right");
 		return false;
 	}
 
@@ -149,42 +156,48 @@ public class AVLTreeNode {
 	 	if(key <= getKey()) {
 	 		if (this.left == null) {
 	 			this.left = new AVLTreeNode(key);
-	 			calcBalance();
-//	 			rotate();
+	 			updateBalance();
+	 			rotate();
 	 		} else {
-	 			this.left.insert(key);
-	 			calcBalance();
-//	 			AVLTreeNode tmp = rotate();
-//	 			if (tmp != this.left) {
-//	 				this.left = tmp;
-//	 			}
+	 			AVLTreeNode tmp = this.left.insert(key);
+	 			if (tmp != this.left) {
+	 				this.left = tmp;
+	 			}
+	 			updateBalance();
+	 			AVLTreeNode thisTmp = rotate();
+	 			if (thisTmp != this) {
+	 				thisTmp.updateBalance();
+	 				return thisTmp;
+	 			} else {
+	 				return this;
+	 			}
 	 		}
 	 	}
 	 	if (key > getKey()) {
 	 		if (this.right == null) {
 	 			this.right = new AVLTreeNode(key);
-	 			calcBalance();
-//	 			rotate();
+	 			updateBalance();
+	 			rotate();
 	 		} else {
-	 			this.right.insert(key);
-	 			calcBalance();
-//	 			AVLTreeNode tmp = rotate();
-//	 			if (tmp != this.right) {
-//	 				this.right = tmp;
-//	 			}
+	 			AVLTreeNode tmp = this.right.insert(key);
+	 			if (tmp != this.right) {
+	 				this.right = tmp;
+	 			}
+	 			updateBalance();
+	 			AVLTreeNode thisTmp = rotate();
+	 			if (thisTmp != this) {
+	 				thisTmp.updateBalance();
+	 				return thisTmp;
+	 			} else {
+	 				return this;
+	 			}
 	 		}
 	 	}
 	 	return this;
 	 }
 	
 	 
-	 /*
-	  *  Idee ist, bei Insert jeweils die Referenz des Nachfolgers zurückzugeben, bei dem das eingefügte Element vorbei gekommen ist
-	  *  Mit dieser wird dann auf die Balance geprüft. Ist diese +/- 2 wird eine Rotation vollzogen und der neue Kopf nach der Rotation wird weiter gegeben
-	  *  womit die Referenz im Elternobjekt geändert werden kann.
-	  */
-	 
-	 private AVLTreeNode rotate() {
+	 private AVLTreeNode rotate() {							// Entscheidet ob rotiert werden soll oder nicht und in welche Richtung
 		 if (getBalance() == -2) {
 			 if (this.left.getBalance() <= 0) {
 				 return rotateRight();
@@ -204,7 +217,6 @@ public class AVLTreeNode {
 	 }
 	 
 	 private AVLTreeNode rotateLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
-		 System.out.println("RotateOneLeft auf " + getKey());
 		 AVLTreeNode tmp = this.right.left;
 		 AVLTreeNode result = this.right;
 		 this.right.left = this;
@@ -213,7 +225,6 @@ public class AVLTreeNode {
 	 }
 	 
 	 private AVLTreeNode rotateRight() {
-		 System.out.println("RotateOneRight auf " + getKey());
 		 AVLTreeNode tmp = this.left.right;
 		 AVLTreeNode result = this.left;
 		 this.left.right = this;
@@ -235,9 +246,9 @@ public class AVLTreeNode {
 		sb.append(String.format("\t%d [label=\"%d, b=%d\"];\n", idx, key, balance));
 		int next = idx + 1;
 		if (left != null)
-			next = left.dotLink(sb, idx, next, "links");
+			next = left.dotLink(sb, idx, next, "l");
 		if (right != null)
-			next = right.dotLink(sb, idx, next, "rechts");
+			next = right.dotLink(sb, idx, next, "r");
 		return next;
 	}
 
