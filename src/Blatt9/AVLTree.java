@@ -27,7 +27,7 @@ public class AVLTree {
 	 * @return 'true' falls der Baum ein valider AVL-Baum ist, 'false' sonst
 	 */
 	public boolean validAVL() {
-		// TODO...
+		return this.root.validAVL();
 	}
 
 	/**
@@ -36,8 +36,39 @@ public class AVLTree {
 	 * @param key der einzufügende Schlüssel
 	 */
 	public void insert(int key) {
-		// TODO...
+		if (this.root == null) {
+			this.root = new AVLTreeNode(key);
+		}
+		this.root.insert(key);
 	}
+	
+	 private void Rotate() {
+		 if (getBalance() == -2) {
+			 if (this.left.getBalance() <= 0) {
+				 rotateOneRight();
+			 } else {
+				 this.left.rotateOneLeft();
+				 rotateOneRight();
+			 }
+		 } else if (getBalance() == 2) {
+			 if (this.right.getBalance() < 0) {
+				 this.right.rotateOneRight();
+				 rotateOneLeft();
+			 } else {
+				 rotateOneLeft();
+			 }
+		 }
+	 }
+	 
+	 private AVLTreeNode rotateOneLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
+		 System.out.println("RotateOneLeft auf " + getKey());
+		 return null;
+	 }
+	 
+	 private AVLTreeNode rotateOneRight() {
+		 System.out.println("RotateOneRight auf " + getKey());
+		 return null;
+	 }
 
 	/**
 	 * Diese Methode sucht einen Schlüssel im AVL-Baum.
@@ -46,7 +77,10 @@ public class AVLTree {
 	 * @return 'true', falls der Schlüssel gefunden wurde, 'false' sonst
 	 */
 	public boolean find(int key) {
-		// TODO...
+		if (this.root == null) {
+			return false;
+		}
+		return this.root.find(key);
 	}
 
 	/**
