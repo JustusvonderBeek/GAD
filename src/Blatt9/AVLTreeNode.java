@@ -150,23 +150,31 @@ public class AVLTreeNode {
 	 		if (this.left == null) {
 	 			this.left = new AVLTreeNode(key);
 	 			calcBalance();
-	 			return this;
+//	 			rotate();
 	 		} else {
 	 			this.left.insert(key);
 	 			calcBalance();
+//	 			AVLTreeNode tmp = rotate();
+//	 			if (tmp != this.left) {
+//	 				this.left = tmp;
+//	 			}
 	 		}
 	 	}
 	 	if (key > getKey()) {
 	 		if (this.right == null) {
 	 			this.right = new AVLTreeNode(key);
 	 			calcBalance();
-	 			return this;
+//	 			rotate();
 	 		} else {
 	 			this.right.insert(key);
 	 			calcBalance();
+//	 			AVLTreeNode tmp = rotate();
+//	 			if (tmp != this.right) {
+//	 				this.right = tmp;
+//	 			}
 	 		}
 	 	}
-	 	return null;
+	 	return this;
 	 }
 	
 	 
@@ -176,32 +184,41 @@ public class AVLTreeNode {
 	  *  womit die Referenz im Elternobjekt geändert werden kann.
 	  */
 	 
-	 private void Rotate() {
+	 private AVLTreeNode rotate() {
 		 if (getBalance() == -2) {
 			 if (this.left.getBalance() <= 0) {
-				 rotateOneRight();
+				 return rotateRight();
 			 } else {
-				 this.left.rotateOneLeft();
-				 rotateOneRight();
+				 this.left = this.left.rotateLeft();
+				 return rotateRight();
 			 }
 		 } else if (getBalance() == 2) {
 			 if (this.right.getBalance() < 0) {
-				 this.right.rotateOneRight();
-				 rotateOneLeft();
+				 this.right = this.right.rotateRight();
+				 return rotateLeft();
 			 } else {
-				 rotateOneLeft();
+				 return rotateLeft();
 			 }
 		 }
+		 return this;
 	 }
 	 
-	 private AVLTreeNode rotateOneLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
+	 private AVLTreeNode rotateLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
 		 System.out.println("RotateOneLeft auf " + getKey());
-		 return null;
+		 AVLTreeNode tmp = this.right.left;
+		 AVLTreeNode result = this.right;
+		 this.right.left = this;
+		 this.right = tmp;
+		 return result;
 	 }
 	 
-	 private AVLTreeNode rotateOneRight() {
+	 private AVLTreeNode rotateRight() {
 		 System.out.println("RotateOneRight auf " + getKey());
-		 return null;
+		 AVLTreeNode tmp = this.left.right;
+		 AVLTreeNode result = this.left;
+		 this.left.right = this;
+		 this.left = tmp;
+		 return result;
 	 }
 	 
 	/**
