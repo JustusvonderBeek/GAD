@@ -145,12 +145,12 @@ public class AVLTreeNode {
 		return false;
 	}
 
-	 public void insert(int key) {
+	 public AVLTreeNode insert(int key) {
 	 	if(key <= getKey()) {
 	 		if (this.left == null) {
 	 			this.left = new AVLTreeNode(key);
 	 			calcBalance();
-	 			return;
+	 			return this;
 	 		} else {
 	 			this.left.insert(key);
 	 			calcBalance();
@@ -160,14 +160,50 @@ public class AVLTreeNode {
 	 		if (this.right == null) {
 	 			this.right = new AVLTreeNode(key);
 	 			calcBalance();
-	 			return;
+	 			return this;
 	 		} else {
 	 			this.right.insert(key);
 	 			calcBalance();
 	 		}
 	 	}
+	 	return null;
 	 }
-
+	
+	 
+	 /*
+	  *  Idee ist, bei Insert jeweils die Referenz des Nachfolgers zurückzugeben, bei dem das eingefügte Element vorbei gekommen ist
+	  *  Mit dieser wird dann auf die Balance geprüft. Ist diese +/- 2 wird eine Rotation vollzogen und der neue Kopf nach der Rotation wird weiter gegeben
+	  *  womit die Referenz im Elternobjekt geändert werden kann.
+	  */
+	 
+	 private void Rotate() {
+		 if (getBalance() == -2) {
+			 if (this.left.getBalance() <= 0) {
+				 rotateOneRight();
+			 } else {
+				 this.left.rotateOneLeft();
+				 rotateOneRight();
+			 }
+		 } else if (getBalance() == 2) {
+			 if (this.right.getBalance() < 0) {
+				 this.right.rotateOneRight();
+				 rotateOneLeft();
+			 } else {
+				 rotateOneLeft();
+			 }
+		 }
+	 }
+	 
+	 private AVLTreeNode rotateOneLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
+		 System.out.println("RotateOneLeft auf " + getKey());
+		 return null;
+	 }
+	 
+	 private AVLTreeNode rotateOneRight() {
+		 System.out.println("RotateOneRight auf " + getKey());
+		 return null;
+	 }
+	 
 	/**
 	 * Diese Methode wandelt den Baum in das Graphviz-Format um.
 	 *

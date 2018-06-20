@@ -41,34 +41,6 @@ public class AVLTree {
 		}
 		this.root.insert(key);
 	}
-	
-	 private void Rotate() {
-		 if (getBalance() == -2) {
-			 if (this.left.getBalance() <= 0) {
-				 rotateOneRight();
-			 } else {
-				 this.left.rotateOneLeft();
-				 rotateOneRight();
-			 }
-		 } else if (getBalance() == 2) {
-			 if (this.right.getBalance() < 0) {
-				 this.right.rotateOneRight();
-				 rotateOneLeft();
-			 } else {
-				 rotateOneLeft();
-			 }
-		 }
-	 }
-	 
-	 private AVLTreeNode rotateOneLeft() {		// Rotiert mit diesem Knoten als Wurzel nach Links
-		 System.out.println("RotateOneLeft auf " + getKey());
-		 return null;
-	 }
-	 
-	 private AVLTreeNode rotateOneRight() {
-		 System.out.println("RotateOneRight auf " + getKey());
-		 return null;
-	 }
 
 	/**
 	 * Diese Methode sucht einen Schlüssel im AVL-Baum.
