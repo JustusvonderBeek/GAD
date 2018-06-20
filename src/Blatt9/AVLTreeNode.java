@@ -1,3 +1,5 @@
+package Blatt9;
+
 /**
  * Diese Klasse implementiert einen Knoten in einem AVL-Baum.
  */
