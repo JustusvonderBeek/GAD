@@ -113,14 +113,21 @@ public class ABTree {
 
 		@Override
 		public void insert(int key) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			try {
+				ABTreeLeaf blatt = (ABTreeLeaf) this.children.get(0);
+				
+			} catch (ClassCastException e) {
+				
+			}
 		}
 
 		@Override
 		public boolean canSteal() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			if (this.children.size() > b) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		@Override
@@ -136,20 +143,17 @@ public class ABTree {
 
 		@Override
 		public int height() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return this.children.get(0).height() + 1;
 		}
 
 		@Override
 		public Integer min() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return this.children.get(0).min();
 		}
 
 		@Override
 		public Integer max() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return this.children.get(children.size()-1).max();
 		}
 
 		@Override
@@ -183,52 +187,55 @@ public class ABTree {
 	 * Diese Klasse repräsentiert ein Blatt des Baumes.
 	 */
 	private class ABTreeLeaf extends ABTreeNode {
+		
+		private int key;
+		
 		@Override
 		public void insert(int key) {
-			// TODO (???)
-			throw new RuntimeException("Not Implemented");
+			this.key = key;
 		}
 
 		@Override
 		public boolean canSteal() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return false;
 		}
 
 		@Override
 		public boolean find(int key) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			if (key == this.key) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		@Override
 		public boolean remove(int key) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return true;
 		}
 
 		@Override
 		public int height() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return 0;
 		}
 
 		@Override
 		public Integer min() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return key;
 		}
 
 		@Override
 		public Integer max() {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			return key;
 		}
 
 		@Override
 		public boolean validAB(boolean root) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			if (root) {
+				return true;
+			} else {
+				return true;				
+			}
 		}
 
 		@Override
@@ -239,8 +246,8 @@ public class ABTree {
 	}
 
 	public ABTree(int a, int b) {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		this.a = a;
+		this.b = b;
 	}
 
 	/**
@@ -249,8 +256,11 @@ public class ABTree {
 	private ABTreeInnerNode root = null;
 
 	public boolean validAB() {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		if (this.root == null) {
+			return true;
+		} else {
+			return this.root.validAB(true);
+		}
 	}
 
 	/**
@@ -259,8 +269,11 @@ public class ABTree {
 	 * @return die ermittelte Höhe
 	 */
 	public int height() {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		if (this.root == null) {
+			return 0;
+		} else {
+			return this.root.height();
+		}
 	}
 
 	/**
@@ -270,8 +283,11 @@ public class ABTree {
 	 * @return 'true', falls der Schlüssel gefunden wurde, 'false' sonst
 	 */
 	public boolean find(int key) {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		if (this.root == null) {
+			return false;
+		} else {
+			return this.root.find(key);	
+		}
 	}
 
 	/**
@@ -280,8 +296,11 @@ public class ABTree {
 	 * @param key der einzufügende Schlüssel
 	 */
 	public void insert(int key) {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		if (this.root == null) {
+			this.root = new ABTreeInnerNode(key);
+		} else {
+			this.root.insert(key);
+		}
 	}
 
 	/**
@@ -291,8 +310,11 @@ public class ABTree {
 	 * @return 'true' falls der Schlüssel gefunden und gelöscht wurde, 'false' sonst
 	 */
 	public boolean remove(int key) {
-		// TODO
-		throw new RuntimeException("Not Implemented");
+		if (this.root == null) {
+			return false;
+		} else {
+			return this.root.remove(key);	
+		}
 	}
 
 	/**
