@@ -113,17 +113,16 @@ public class ABTree {
 
 		@Override
 		public void insert(int key) {
-			try {
-				ABTreeLeaf blatt = (ABTreeLeaf) this.children.get(0);
+			if (children.get(0) instanceof ABTreeLeaf) {
 				
-			} catch (ClassCastException e) {
+			} else {
 				
 			}
 		}
 
 		@Override
 		public boolean canSteal() {
-			if (this.children.size() > b) {
+			if (this.children.size() > a) {
 				return true;
 			} else {
 				return false;
@@ -132,8 +131,11 @@ public class ABTree {
 
 		@Override
 		public boolean find(int key) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			int i = 0;
+			while (i < keys.size() && keys.get(i) < key) {
+				i++;
+			}
+			return children.get(i).find(key);
 		}
 
 		public boolean remove(int key) {
@@ -189,6 +191,10 @@ public class ABTree {
 	private class ABTreeLeaf extends ABTreeNode {
 		
 		private int key;
+		
+		public int getKey() {
+			return this.key;
+		}
 		
 		@Override
 		public void insert(int key) {
