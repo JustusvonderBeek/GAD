@@ -1,6 +1,7 @@
 package Blatt10;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Diese Klasse implementiert einen (a,b)-Baum.
@@ -25,6 +26,7 @@ public class ABTree {
 		 * Diese Methode fügt einen Schlüssel in den Baum ein.
 		 *
 		 * @param key der Schlüssel, der eingefügt wird
+		 * @return
 		 */
 		public abstract void insert(int key);
 
@@ -91,6 +93,8 @@ public class ABTree {
 	 * Diese Klasse repräsentiert einen inneren Knoten des Baumes.
 	 */
 	private class ABTreeInnerNode extends ABTreeNode {
+		
+		private ABTreeInnerNode parent;
 		private ArrayList<Integer> keys;
 		private ArrayList<ABTreeNode> children;
 
@@ -110,19 +114,63 @@ public class ABTree {
 		public ABTreeInnerNode(int key) {
 			this(key, new ABTreeLeaf(), new ABTreeLeaf());
 		}
+		
+		public ABTreeInnerNode getParent() {
+			return parent;
+		}
+
+		public void setParent(ABTreeInnerNode parent) {
+			this.parent = parent;
+		}
 
 		@Override
 		public void insert(int key) {
 			if (children.get(0) instanceof ABTreeLeaf) {
-				
+				int i = 0;
+				while (i < keys.size() && keys.get(i) <= key) {
+					i++;
+				}
+				if (i == keys.size()) {
+					keys.add(key);
+					children.add(new ABTreeLeaf());
+					System.out.println("Inserted " + key);
+				} else {
+					System.out.println("Inserted " + key);
+					keys.add(i, key);
+				}
+				parent = correctTree();
 			} else {
-				
+				int i = 0;
+				while (i < keys.size() && keys.get(i) < key) {
+					i++;
+				}
+				children.get(i).insert(key);
+				parent = correctTree();
 			}
+		}
+		
+		private ABTreeInnerNode correctTree() {
+			if (this.keys.size() > b) {
+				int tmp = keys.size() / 2;
+				int newTop = keys.get(tmp);
+				List<Integer> newKeysLeft = keys.subList(0, tmp);
+				List<Integer> newKeysRight = keys.subList(tmp + 1, keys.size());
+				List<ABTreeNode> newChildrenLeft = children.subList(0, tmp);
+				List<ABTreeNode> newChildrenRight = children.subList(tmp + 1, children.size() - 1);
+				ABTreeInnerNode newLeftNode = new ABTreeInnerNode((ArrayList<Integer>)newKeysLeft, (ArrayList<ABTreeNode>)newChildrenLeft);
+				ABTreeInnerNode newRightNode = new ABTreeInnerNode((ArrayList<Integer>)newKeysRight, (ArrayList<ABTreeNode>)newChildrenRight);
+				ABTreeInnerNode newTopNode = new ABTreeInnerNode(newTop, newLeftNode, newRightNode);
+				return newTopNode;
+			}
+			if (this.keys.size() < a) {
+				return null;
+			}
+			return null;
 		}
 
 		@Override
 		public boolean canSteal() {
-			if (this.children.size() > a) {
+			if (this.keys.size() > a) {
 				return true;
 			} else {
 				return false;
@@ -139,29 +187,99 @@ public class ABTree {
 		}
 
 		public boolean remove(int key) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			if (children.get(0) instanceof ABTreeLeaf) {
+				int i = 0;
+				while (i < keys.size() && keys.get(i) < key) {
+					i++;
+				}
+				if (children.get(i).remove(key)) {
+					children.remove(i);
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				int i = 0;
+				while (i < keys.size() && keys.get(i) < key) {
+					i++;
+				}
+				if (children.get(i).remove(key)) {
+					correctTree();
+					return true;
+				}
+				return false;
+			}
 		}
 
 		@Override
 		public int height() {
-			return this.children.get(0).height() + 1;
+			if (children.get(0) instanceof ABTreeLeaf) {
+				return 1;
+			} else {
+				return children.get(0).height() + 1;
+			}
 		}
 
 		@Override
 		public Integer min() {
-			return this.children.get(0).min();
+			if (children.get(0) instanceof ABTreeLeaf) {
+				return keys.get(0);
+			} else {
+				return this.children.get(0).min();
+			}
 		}
 
 		@Override
 		public Integer max() {
-			return this.children.get(children.size()-1).max();
+			if (children.get(0) instanceof ABTreeLeaf) {
+				return keys.get(keys.size() - 1);
+			} else {
+				return this.children.get(children.size()-1).max();
+			}
 		}
 
 		@Override
 		public boolean validAB(boolean root) {
-			// TODO
-			throw new RuntimeException("Not Implemented");
+			if (root) {
+				if ( (parent == null && this.children.size() <= b) || (parent != null && this.children.size() <= b && this.children.size() >= a) ) {
+					int tmpKey = keys.get(0);
+					for (int i = 1; i < keys.size(); i++) {				// Testet ob die Schlüssel sortiert sind
+						if (keys.get(i) >= tmpKey) {
+							tmpKey = keys.get(i);
+						} else {
+							System.out.println("Falsche Keyreihenfolge");
+							return false;
+						}
+					}
+					int tmpHeight = children.get(0).height();
+					for (int i = 1; i < children.size(); i++) {			// Testet ob die Teilbäume alle die gleiche Höhe haben
+						if (children.get(i).height() != tmpHeight) {
+							System.out.println("Unteschiedliche Höhe");
+							return false;
+						}
+					}
+					if (!(children.get(0) instanceof ABTreeLeaf)) {
+						for (int i = 0; i < keys.size(); i++) {
+							if (keys.get(i) >= children.get(i).max() && keys.get(i) < children.get(i + 1).min()) {
+								// Intentionally left blank
+							} else {
+								System.out.println("Teilbäume enhalten falsche Elemente");
+								return false;
+							}
+						}
+					}
+					for (int i = 0; i < children.size(); i++) {			// Prüft für alle Unterbäume dasselbe
+						if(!children.get(i).validAB(true)) {
+							System.out.println("Teilbäume sind nicht korrekt");
+							return false;
+						}
+					}
+					return true;
+				}
+				System.out.println("Falsche Children Size " + children.size() + " " + a);
+			}
+			System.out.println("Root Falsch");
+			return false;
 		}
 
 		@Override
@@ -190,15 +308,10 @@ public class ABTree {
 	 */
 	private class ABTreeLeaf extends ABTreeNode {
 		
-		private int key;
-		
-		public int getKey() {
-			return this.key;
-		}
-		
+
 		@Override
 		public void insert(int key) {
-			this.key = key;
+			// Intentionally left blank
 		}
 
 		@Override
@@ -208,11 +321,7 @@ public class ABTree {
 
 		@Override
 		public boolean find(int key) {
-			if (key == this.key) {
-				return true;
-			} else {
-				return false;
-			}
+			return true;
 		}
 
 		@Override
@@ -227,12 +336,12 @@ public class ABTree {
 
 		@Override
 		public Integer min() {
-			return key;
+			return null;
 		}
 
 		@Override
 		public Integer max() {
-			return key;
+			return null;
 		}
 
 		@Override
@@ -240,7 +349,7 @@ public class ABTree {
 			if (root) {
 				return true;
 			} else {
-				return true;				
+				return false;				
 			}
 		}
 
@@ -305,7 +414,11 @@ public class ABTree {
 		if (this.root == null) {
 			this.root = new ABTreeInnerNode(key);
 		} else {
+			ABTreeNode tmpParent = this.root.getParent();
 			this.root.insert(key);
+			if (root.getParent() != tmpParent) {
+				this.root = this.root.getParent();
+			}
 		}
 	}
 
