@@ -22,6 +22,9 @@ public class ABTree {
 	 * dabei um einen inneren Knoten oder ein Blatt handeln.
 	 */
 	public abstract class ABTreeNode {
+		
+		protected ABTreeNode parent;
+		
 		/**
 		 * Diese Methode fügt einen Schlüssel in den Baum ein.
 		 *
@@ -94,7 +97,6 @@ public class ABTree {
 	 */
 	private class ABTreeInnerNode extends ABTreeNode {
 		
-		private ABTreeInnerNode parent;
 		private ArrayList<Integer> keys;
 		private ArrayList<ABTreeNode> children;
 
@@ -114,14 +116,6 @@ public class ABTree {
 		public ABTreeInnerNode(int key) {
 			this(key, new ABTreeLeaf(), new ABTreeLeaf());
 		}
-		
-		public ABTreeInnerNode getParent() {
-			return parent;
-		}
-
-		public void setParent(ABTreeInnerNode parent) {
-			this.parent = parent;
-		}
 
 		@Override
 		public void insert(int key) {
@@ -138,34 +132,38 @@ public class ABTree {
 					System.out.println("Inserted " + key);
 					keys.add(i, key);
 				}
-				parent = correctTree();
+				correctInsertion();
 			} else {
 				int i = 0;
 				while (i < keys.size() && keys.get(i) < key) {
 					i++;
 				}
 				children.get(i).insert(key);
-				parent = correctTree();
+				correctInsertion();
 			}
 		}
 		
-		private ABTreeInnerNode correctTree() {
+		private void correctInsertion() {
 			if (this.keys.size() > b) {
 				int tmp = keys.size() / 2;
 				int newTop = keys.get(tmp);
 				List<Integer> newKeysLeft = keys.subList(0, tmp);
-				List<Integer> newKeysRight = keys.subList(tmp + 1, keys.size());
+				List<Integer> newKeysRight = keys.subList(tmp + 1, keys.size());	// Kinder noch Parent setzen
 				List<ABTreeNode> newChildrenLeft = children.subList(0, tmp);
 				List<ABTreeNode> newChildrenRight = children.subList(tmp + 1, children.size() - 1);
 				ABTreeInnerNode newLeftNode = new ABTreeInnerNode((ArrayList<Integer>)newKeysLeft, (ArrayList<ABTreeNode>)newChildrenLeft);
+				newLeftNode.parent = parent;
 				ABTreeInnerNode newRightNode = new ABTreeInnerNode((ArrayList<Integer>)newKeysRight, (ArrayList<ABTreeNode>)newChildrenRight);
-				ABTreeInnerNode newTopNode = new ABTreeInnerNode(newTop, newLeftNode, newRightNode);
-				return newTopNode;
+				newRightNode.parent = parent;
+				int i = ((ABTreeInnerNode) parent).children.indexOf(this);
+				if (i >= ((ABTreeInnerNode) parent).children.size()) {
+					((ABTreeInnerNode) parent).children.add(newLeftNode);
+					((ABTreeInnerNode) parent).children.add(newRightNode);
+				} else {
+					((ABTreeInnerNode) parent).children.add(i, newLeftNode);
+					((ABTreeInnerNode) parent).children.add(i + 1, newRightNode);	
+				}
 			}
-			if (this.keys.size() < a) {
-				return null;
-			}
-			return null;
 		}
 
 		@Override
@@ -204,12 +202,20 @@ public class ABTree {
 					i++;
 				}
 				if (children.get(i).remove(key)) {
-					correctTree();
+					correctInsertion();
 					return true;
 				}
 				return false;
 			}
 		}
+		
+		private ABTreeInnerNode correctRemove() {
+			if (keys.size() < a) {
+				
+			}
+			return this;
+		}
+		
 
 		@Override
 		public int height() {
@@ -414,11 +420,7 @@ public class ABTree {
 		if (this.root == null) {
 			this.root = new ABTreeInnerNode(key);
 		} else {
-			ABTreeNode tmpParent = this.root.getParent();
 			this.root.insert(key);
-			if (root.getParent() != tmpParent) {
-				this.root = this.root.getParent();
-			}
 		}
 	}
 
