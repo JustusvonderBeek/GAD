@@ -1,7 +1,6 @@
 package Blatt10;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Diese Klasse implementiert einen (a,b)-Baum.
@@ -129,8 +128,9 @@ public class ABTree {
 					children.add(new ABTreeLeaf());
 					System.out.println("Inserted " + key);
 				} else {
-					System.out.println("Inserted " + key);
 					keys.add(i, key);
+					children.add(i, new ABTreeLeaf());
+					System.out.println("Inserted " + key);
 				}
 				parent = correctInsertion();
 			} else {
@@ -144,7 +144,7 @@ public class ABTree {
 		}
 		
 		private ABTreeNode correctInsertion() {
-			if (this.keys.size() > b) {
+			if (this.children.size() > b) {
 				int tmp = keys.size() / 2;
 				if (parent == null) {
 					parent = new ABTreeInnerNode(keys.get(tmp));
@@ -152,7 +152,15 @@ public class ABTree {
 					((ABTreeInnerNode)parent).children.add(this);
 					((ABTreeInnerNode)parent).keys.remove(0);
 				}
-				((ABTreeInnerNode) parent).keys.add(keys.get(tmp));
+				int counter = 0;
+				while (counter < ((ABTreeInnerNode) parent).keys.size() && ((ABTreeInnerNode) parent).keys.get(counter) < keys.get(tmp)) {
+					counter++;
+				}
+				if (counter == ((ABTreeInnerNode) parent).keys.size()) {
+					((ABTreeInnerNode) parent).keys.add(keys.get(tmp));
+				} else {
+					((ABTreeInnerNode) parent).keys.add(counter, keys.get(tmp));
+				}
 				ArrayList<Integer> newKeysLeft = new ArrayList<>();
 				for (int i = 0; i < tmp; i++) {
 					newKeysLeft.add(keys.get(i));
@@ -163,24 +171,28 @@ public class ABTree {
 				}
 				ArrayList<ABTreeNode> newChildrenLeft = new ArrayList<>();
 				for (int i = 0; i <= tmp; i++) {
-					children.get(i).parent = parent;			// Verändert die Referenz auf das Elternelement um eine Ebene
 					newChildrenLeft.add(children.get(i));
 				}
 				ArrayList<ABTreeNode> newChildrenRight = new ArrayList<>();
 				for (int i = tmp + 1; i < children.size(); i++) {
-					children.get(i).parent = parent;
 					newChildrenRight.add(children.get(i));
 				}
 				ABTreeInnerNode newLeftNode = new ABTreeInnerNode(newKeysLeft, newChildrenLeft);
 				newLeftNode.parent = parent;
 				ABTreeInnerNode newRightNode = new ABTreeInnerNode(newKeysRight, newChildrenRight);
 				newRightNode.parent = parent;
+				for (int i = 0; i < newChildrenLeft.size(); i++) {
+					newChildrenLeft.get(i).parent = newLeftNode;
+				}
+				for (int i = 0; i < newChildrenRight.size(); i++) {
+					newChildrenRight.get(i).parent = newRightNode;
+				}
 				int i = ((ABTreeInnerNode) parent).children.indexOf(this);
 				if (i >= ((ABTreeInnerNode) parent).children.size()) {
 					((ABTreeInnerNode) parent).children.add(newLeftNode);
 					((ABTreeInnerNode) parent).children.add(newRightNode);
 				} else {
-					((ABTreeInnerNode) parent).children.add(i, newLeftNode);
+					((ABTreeInnerNode) parent).children.set(i, newLeftNode);
 					((ABTreeInnerNode) parent).children.add(i + 1, newRightNode);	
 				}
 			}
@@ -211,8 +223,11 @@ public class ABTree {
 				while (i < keys.size() && keys.get(i) < key) {
 					i++;
 				}
-				if (children.get(i).remove(key)) {
+				if (keys.get(i) == key) {
+					System.out.println("Removed " + key);
+					keys.remove(i);
 					children.remove(i);
+					correctRemove();
 					return true;
 				} else {
 					return false;
@@ -223,7 +238,7 @@ public class ABTree {
 					i++;
 				}
 				if (children.get(i).remove(key)) {
-					correctInsertion();
+					correctRemove();
 					return true;
 				}
 				return false;
@@ -231,7 +246,14 @@ public class ABTree {
 		}
 		
 		private ABTreeInnerNode correctRemove() {
-			if (keys.size() < a) {
+			if (parent != null && children.size() < a) {
+				int index = ((ABTreeInnerNode)parent).children.indexOf(this);
+				if (index > 0 && index < ((ABTreeInnerNode)parent).children.size()) {
+					
+				} else {
+					
+				}
+			} else if (parent == null && children.size() < 2) {
 				
 			}
 			return this;
@@ -268,7 +290,7 @@ public class ABTree {
 		@Override
 		public boolean validAB(boolean root) {
 			if (root) {
-				if ( (parent == null && this.keys.size() <= b) || (parent != null && this.keys.size() <= b && this.keys.size() >= a) ) {
+				if ( (parent == null && this.children.size() <= b) || (parent != null && this.children.size() <= b && this.children.size() >= a) ) {
 					int tmpKey = keys.get(0);
 					for (int i = 1; i < keys.size(); i++) {				// Testet ob die Schlüssel sortiert sind
 						if (keys.get(i) >= tmpKey) {
@@ -304,8 +326,8 @@ public class ABTree {
 					return true;
 				}
 				System.out.println("Falsche Children Size " + children.size() + " " + a);
+				return false;
 			}
-			System.out.println("Root Falsch");
 			return false;
 		}
 
@@ -442,6 +464,9 @@ public class ABTree {
 			this.root = new ABTreeInnerNode(key);
 		} else {
 			this.root.insert(key);
+			if (this.root.parent != null) {
+				this.root = (ABTreeInnerNode) this.root.parent;
+			}
 		}
 	}
 
@@ -455,7 +480,11 @@ public class ABTree {
 		if (this.root == null) {
 			return false;
 		} else {
-			return this.root.remove(key);	
+			boolean returnBool = this.root.remove(key);
+			if (this.root.parent != null) {
+				this.root = (ABTreeInnerNode) this.root.parent;
+			}
+			return returnBool;
 		}
 	}
 
