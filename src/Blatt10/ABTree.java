@@ -21,20 +21,21 @@ public class ABTree {
 	 * dabei um einen inneren Knoten oder ein Blatt handeln.
 	 */
 	public abstract class ABTreeNode {
-		
+
 		protected ABTreeInnerNode parent;
-		
+
 		/**
 		 * Diese Methode fügt einen Schlüssel in den Baum ein.
 		 *
-		 * @param key der Schlüssel, der eingefügt wird
+		 * @param key
+		 *            der Schlüssel, der eingefügt wird
 		 * @return
 		 */
 		public abstract void insert(int key);
 
 		/**
-		 * Diese Methode ermittelt, ob aus dem entsprechenden Knoten gestohlen
-		 * werden kann oder nicht.
+		 * Diese Methode ermittelt, ob aus dem entsprechenden Knoten gestohlen werden
+		 * kann oder nicht.
 		 *
 		 * @return 'true' falls gestohlen werden kann, 'false' sonst
 		 */
@@ -43,7 +44,8 @@ public class ABTree {
 		/**
 		 * Diese Methode sucht den Schlüssel 'key' im Teilbaum.
 		 *
-		 * @param key der Schlüssel, der gesucht wird
+		 * @param key
+		 *            der Schlüssel, der gesucht wird
 		 * @return 'true' falls der Schlüssel vorhanden ist, 'false' sonst
 		 */
 		public abstract boolean find(int key);
@@ -51,7 +53,8 @@ public class ABTree {
 		/**
 		 * Diese Methode entfernt den Schlüssel 'key' im Teilbaum, falls es ihn gibt.
 		 *
-		 * @param key der Schlüssel, der entfernt werden soll
+		 * @param key
+		 *            der Schlüssel, der entfernt werden soll
 		 * @return 'true' falls der Schlüssel gefunden und entfernt wurde, 'false' sonst
 		 */
 		public abstract boolean remove(int key);
@@ -65,22 +68,24 @@ public class ABTree {
 
 		/**
 		 * Diese Methode ermittelt das Minimum im jeweiligen Teilbaum.
+		 * 
 		 * @return das Minimum
 		 */
 		public abstract Integer min();
 
 		/**
 		 * Diese Methode ermittelt das Maximum im jeweiligen Teilbaum.
+		 * 
 		 * @return das Maximum
 		 */
 		public abstract Integer max();
 
 		/**
-		 * Diese Methode ist zum Debuggen gedacht und prüft, ob es sich
-		 * um einen validen (a,b)-Baum handelt.
+		 * Diese Methode ist zum Debuggen gedacht und prüft, ob es sich um einen validen
+		 * (a,b)-Baum handelt.
 		 *
 		 * @return 'true' falls der Baum ein valider (a,b)-Baum ist, 'false' sonst
-		*/
+		 */
 		public abstract boolean validAB(boolean root);
 
 		/**
@@ -95,7 +100,7 @@ public class ABTree {
 	 * Diese Klasse repräsentiert einen inneren Knoten des Baumes.
 	 */
 	private class ABTreeInnerNode extends ABTreeNode {
-		
+
 		private ArrayList<Integer> keys;
 		private ArrayList<ABTreeNode> children;
 
@@ -125,7 +130,9 @@ public class ABTree {
 				}
 				if (i == keys.size()) {
 					keys.add(key);
-					children.add(new ABTreeLeaf());
+					ABTreeLeaf insert = new ABTreeLeaf();
+					insert.parent = this;
+					children.add(insert);
 					System.out.println("Inserted " + key);
 				} else {
 					keys.add(i, key);
@@ -142,15 +149,15 @@ public class ABTree {
 				parent = correctInsertion();
 			}
 		}
-		
+
 		private ABTreeInnerNode correctInsertion() {
 			if (this.children.size() > b) {
 				int tmp = keys.size() / 2;
 				if (parent == null) {
 					parent = new ABTreeInnerNode(keys.get(tmp));
-					((ABTreeInnerNode)parent).children = new ArrayList<ABTreeNode>();
-					((ABTreeInnerNode)parent).children.add(this);
-					((ABTreeInnerNode)parent).keys.remove(0);
+					((ABTreeInnerNode) parent).children = new ArrayList<ABTreeNode>();
+					((ABTreeInnerNode) parent).children.add(this);
+					((ABTreeInnerNode) parent).keys.remove(0);
 				}
 				int counter = 0;
 				while (counter < parent.keys.size() && parent.keys.get(counter) < keys.get(tmp)) {
@@ -193,7 +200,7 @@ public class ABTree {
 					parent.children.add(newRightNode);
 				} else {
 					parent.children.set(i, newLeftNode);
-					parent.children.add(i + 1, newRightNode);	
+					parent.children.add(i + 1, newRightNode);
 				}
 			}
 			return parent;
@@ -244,41 +251,50 @@ public class ABTree {
 				return false;
 			}
 		}
-		
+
 		private ABTreeInnerNode correctRemove() {
 			if (parent != null && children.size() < a) {
+				System.out.println("Parent nicht null");
 				int index = ((ABTreeInnerNode)parent).children.indexOf(this);
-				ABTreeInnerNode top = (ABTreeInnerNode)parent;
-				if (index > 0 && index < ((ABTreeInnerNode)parent).children.size()) {				// Merge von links oder rechts
-					if (((ABTreeInnerNode)top.children.get(index - 1)).children.size() > a) {
-						ABTreeInnerNode tmpChild = (ABTreeInnerNode) top.children.get(index - 1);
+				if (index > 0 && index < parent.children.size()) {				// Merge von links oder rechts
+					if (((ABTreeInnerNode)parent.children.get(index - 1)).children.size() > a) {
+						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index - 1);
 						ABTreeNode newLeftChild = tmpChild.children.get(tmpChild.children.size()-1);
 						children.add(0, newLeftChild);
-						keys.add(0, (top.keys.get(index - 1)));
+						keys.add(0, (parent.keys.get(index - 1)));
 						tmpChild.children.remove(tmpChild.children.size() - 1);
-						top.keys.add(index - 1, tmpChild.keys.get(tmpChild.keys.size() - 1));
+						parent.keys.add(index - 1, tmpChild.keys.get(tmpChild.keys.size() - 1));
 						tmpChild.keys.remove(tmpChild.keys.size() - 1);
 						return this;
-					} else if (((ABTreeInnerNode)top.children.get(index + 1)).children.size() > a) {
-						ABTreeInnerNode tmpChild = (ABTreeInnerNode) top.children.get(index + 1);
-						ABTreeNode newRightChild = tmpChild.children.get(0);		// Das kleinste Kind im rechten Teilbaum
-						children.add(children.size()-1, newRightChild);
-						keys.add(keys.size() - 1, (top.keys.get(index + 1)));
-						tmpChild.children.remove(0);
-						top.keys.add(index + 1, tmpChild.keys.get(0));
-						tmpChild.keys.remove(0);
+					} else if (((ABTreeInnerNode)parent.children.get(index + 1)).children.size() > a) {
+						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);	// Der Teilknoten rechts vom aktuellen Knoten
+						ABTreeNode newRightChild = tmpChild.children.get(0);						// Das kleinste Kind im rechten Teilbaum
+						children.add(children.size() - 1, newRightChild);							// Ersetzt das aktuell größte Kind
+						keys.add(keys.size(), parent.keys.get(index));									// Schreibt das Element das bisher auf das größte Element im Baum verweist ans Ende der Liste
+						tmpChild.children.remove(0);												// Entfernt das Kind aus dem rechten Teilbaum, das wir klauen
+						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
+						tmpChild.keys.remove(0);													// Und entfernt es aus dem rechten Knoten
 						return this;
 					}
-					
 				} else {
-					
+					if (index == 0 && ((ABTreeInnerNode)parent.children.get(index + 1)).children.size() > a) {
+						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);	// Der Teilknoten rechts vom aktuellen Knoten
+						ABTreeNode newRightChild = tmpChild.children.get(0);							// Das kleinste Kind im rechten Teilbaum
+						children.add(children.size() - 1, newRightChild);								// Ersetzt das aktuell größte Kind
+						keys.add(keys.size(), parent.keys.get(index));									// Schreibt das Element das bisher auf das größte Element im Baum verweist ans Ende der Liste
+						tmpChild.children.remove(0);													// Entfernt das Kind aus dem rechten Teilbaum, das wir klauen
+						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
+						tmpChild.keys.remove(0);														// Und entfernt es aus dem rechten Knoten
+						return this;
+					} else {
+						
+					}
 				}
 			} else if (parent == null && children.size() < 2) {
-				
+				System.out.println("Leaf nicht gesetzt");
 			}
 			return this;
 		}
-		
 
 		@Override
 		public int height() {
@@ -303,16 +319,17 @@ public class ABTree {
 			if (children.get(0) instanceof ABTreeLeaf) {
 				return keys.get(keys.size() - 1);
 			} else {
-				return this.children.get(children.size()-1).max();
+				return this.children.get(children.size() - 1).max();
 			}
 		}
 
 		@Override
 		public boolean validAB(boolean root) {
 			if (root) {
-				if ( (parent == null && this.children.size() <= b) || (parent != null && this.children.size() <= b && this.children.size() >= a) ) {
+				if ((parent == null && this.children.size() <= b)
+						|| (parent != null && this.children.size() <= b && this.children.size() >= a)) {
 					int tmpKey = keys.get(0);
-					for (int i = 1; i < keys.size(); i++) {				// Testet ob die Schlüssel sortiert sind
+					for (int i = 1; i < keys.size(); i++) { // Testet ob die Schlüssel sortiert sind
 						if (keys.get(i) >= tmpKey) {
 							tmpKey = keys.get(i);
 						} else {
@@ -321,7 +338,7 @@ public class ABTree {
 						}
 					}
 					int tmpHeight = children.get(0).height();
-					for (int i = 1; i < children.size(); i++) {			// Testet ob die Teilbäume alle die gleiche Höhe haben
+					for (int i = 1; i < children.size(); i++) { // Testet ob die Teilbäume alle die gleiche Höhe haben
 						if (children.get(i).height() != tmpHeight) {
 							System.out.println("Unteschiedliche Höhe");
 							return false;
@@ -337,8 +354,8 @@ public class ABTree {
 							}
 						}
 					}
-					for (int i = 0; i < children.size(); i++) {			// Prüft für alle Unterbäume dasselbe
-						if(!children.get(i).validAB(true)) {
+					for (int i = 0; i < children.size(); i++) { // Prüft für alle Unterbäume dasselbe
+						if (!children.get(i).validAB(true)) {
 							System.out.println("Teilbäume sind nicht korrekt");
 							return false;
 						}
@@ -376,7 +393,6 @@ public class ABTree {
 	 * Diese Klasse repräsentiert ein Blatt des Baumes.
 	 */
 	private class ABTreeLeaf extends ABTreeNode {
-		
 
 		@Override
 		public void insert(int key) {
@@ -418,7 +434,7 @@ public class ABTree {
 			if (root) {
 				return true;
 			} else {
-				return false;				
+				return false;
 			}
 		}
 
@@ -463,21 +479,23 @@ public class ABTree {
 	/**
 	 * Diese Methode sucht einen Schlüssel im (a,b)-Baum.
 	 *
-	 * @param key der Schlüssel, der gesucht werden soll
+	 * @param key
+	 *            der Schlüssel, der gesucht werden soll
 	 * @return 'true', falls der Schlüssel gefunden wurde, 'false' sonst
 	 */
 	public boolean find(int key) {
 		if (this.root == null) {
 			return false;
 		} else {
-			return this.root.find(key);	
+			return this.root.find(key);
 		}
 	}
 
 	/**
 	 * Diese Methode fügt einen neuen Schlüssel in den (a,b)-Baum ein.
 	 *
-	 * @param key der einzufügende Schlüssel
+	 * @param key
+	 *            der einzufügende Schlüssel
 	 */
 	public void insert(int key) {
 		if (this.root == null) {
@@ -493,7 +511,8 @@ public class ABTree {
 	/**
 	 * Diese Methode löscht einen Schlüssel aus dem (a,b)-Baum.
 	 *
-	 * @param key der zu löschende Schlüssel
+	 * @param key
+	 *            der zu löschende Schlüssel
 	 * @return 'true' falls der Schlüssel gefunden und gelöscht wurde, 'false' sonst
 	 */
 	public boolean remove(int key) {

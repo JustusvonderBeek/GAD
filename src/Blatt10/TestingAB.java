@@ -53,12 +53,14 @@ public class TestingAB {
 		tree.insert(100);
 		System.out.println(tree.dot());
 		System.err.println(tree.validAB());
-		tree.remove(13);
+		tree.remove(7);
 		System.out.println(tree.dot());
 		tree.remove(17);
 		System.out.println(tree.dot());
-//		tree.remove(10);
-//		System.out.println(tree.dot());
+		tree.remove(13);
+		System.out.println(tree.dot());
+		tree.remove(6);
+		System.out.println(tree.dot());
 	}
 	
 }
