@@ -238,7 +238,7 @@ public class ABTree {
 					i++;
 				}
 				if (children.get(i).remove(key)) {
-					correctRemove();
+					correctRemove(i;
 					return true;
 				}
 				return false;
@@ -248,7 +248,27 @@ public class ABTree {
 		private ABTreeInnerNode correctRemove() {
 			if (parent != null && children.size() < a) {
 				int index = ((ABTreeInnerNode)parent).children.indexOf(this);
-				if (index > 0 && index < ((ABTreeInnerNode)parent).children.size()) {
+				ABTreeInnerNode top = (ABTreeInnerNode)parent;
+				if (index > 0 && index < ((ABTreeInnerNode)parent).children.size()) {				// Merge von links oder rechts
+					if (((ABTreeInnerNode)top.children.get(index - 1)).children.size() > a) {
+						ABTreeInnerNode tmpChild = (ABTreeInnerNode) top.children.get(index - 1);
+						ABTreeNode newLeftChild = tmpChild.children.get(tmpChild.children.size()-1);
+						children.add(0, newLeftChild);
+						keys.add(0, (top.keys.get(index - 1)));
+						tmpChild.children.remove(tmpChild.children.size() - 1);
+						top.keys.add(index - 1, tmpChild.keys.get(tmpChild.keys.size() - 1));
+						tmpChild.keys.remove(tmpChild.keys.size() - 1);
+						return this;
+					} else if (((ABTreeInnerNode)top.children.get(index + 1)).children.size() > a) {
+						ABTreeInnerNode tmpChild = (ABTreeInnerNode) top.children.get(index + 1);
+						ABTreeNode newRightChild = tmpChild.children.get(0);		// Das kleinste Kind im rechten Teilbaum
+						children.add(children.size()-1, newRightChild);
+						keys.add(keys.size() - 1, (top.keys.get(index + 1)));
+						tmpChild.children.remove(0);
+						top.keys.add(index + 1, tmpChild.keys.get(0));
+						tmpChild.keys.remove(0);
+						return this;
+					}
 					
 				} else {
 					
