@@ -52,6 +52,7 @@ public class TestingAB {
 		System.out.println(tree.dot());
 		tree.insert(100);
 		System.out.println(tree.dot());
+		System.err.println(tree.validAB());
 		tree.remove(13);
 		System.out.println(tree.dot());
 		tree.remove(17);

@@ -22,7 +22,7 @@ public class ABTree {
 	 */
 	public abstract class ABTreeNode {
 		
-		protected ABTreeNode parent;
+		protected ABTreeInnerNode parent;
 		
 		/**
 		 * Diese Methode fügt einen Schlüssel in den Baum ein.
@@ -143,7 +143,7 @@ public class ABTree {
 			}
 		}
 		
-		private ABTreeNode correctInsertion() {
+		private ABTreeInnerNode correctInsertion() {
 			if (this.children.size() > b) {
 				int tmp = keys.size() / 2;
 				if (parent == null) {
@@ -153,13 +153,13 @@ public class ABTree {
 					((ABTreeInnerNode)parent).keys.remove(0);
 				}
 				int counter = 0;
-				while (counter < ((ABTreeInnerNode) parent).keys.size() && ((ABTreeInnerNode) parent).keys.get(counter) < keys.get(tmp)) {
+				while (counter < parent.keys.size() && parent.keys.get(counter) < keys.get(tmp)) {
 					counter++;
 				}
-				if (counter == ((ABTreeInnerNode) parent).keys.size()) {
-					((ABTreeInnerNode) parent).keys.add(keys.get(tmp));
+				if (counter == parent.keys.size()) {
+					parent.keys.add(keys.get(tmp));
 				} else {
-					((ABTreeInnerNode) parent).keys.add(counter, keys.get(tmp));
+					parent.keys.add(counter, keys.get(tmp));
 				}
 				ArrayList<Integer> newKeysLeft = new ArrayList<>();
 				for (int i = 0; i < tmp; i++) {
@@ -187,13 +187,13 @@ public class ABTree {
 				for (int i = 0; i < newChildrenRight.size(); i++) {
 					newChildrenRight.get(i).parent = newRightNode;
 				}
-				int i = ((ABTreeInnerNode) parent).children.indexOf(this);
-				if (i >= ((ABTreeInnerNode) parent).children.size()) {
-					((ABTreeInnerNode) parent).children.add(newLeftNode);
-					((ABTreeInnerNode) parent).children.add(newRightNode);
+				int i = parent.children.indexOf(this);
+				if (i >= parent.children.size()) {
+					parent.children.add(newLeftNode);
+					parent.children.add(newRightNode);
 				} else {
-					((ABTreeInnerNode) parent).children.set(i, newLeftNode);
-					((ABTreeInnerNode) parent).children.add(i + 1, newRightNode);	
+					parent.children.set(i, newLeftNode);
+					parent.children.add(i + 1, newRightNode);	
 				}
 			}
 			return parent;
@@ -238,7 +238,7 @@ public class ABTree {
 					i++;
 				}
 				if (children.get(i).remove(key)) {
-					correctRemove(i;
+					correctRemove();
 					return true;
 				}
 				return false;
