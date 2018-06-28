@@ -252,59 +252,66 @@ public class ABTree {
 			}
 		}
 
-		private ABTreeInnerNode correctRemove() {
+		private void correctRemove() {
 			if (parent != null && children.size() < a) {
-				System.out.println("Parent nicht null");
 				int index = parent.children.indexOf(this);
-				if (index > 0 && index < parent.children.size()) {				// Merge von links oder rechts
-					if (((ABTreeInnerNode)parent.children.get(index - 1)).children.size() > a) {
-						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index - 1);
-						ABTreeNode newLeftChild = tmpChild.children.get(tmpChild.children.size()-1);
-						children.add(0, newLeftChild);
-						keys.add(0, (parent.keys.get(index - 1)));
-						tmpChild.children.remove(tmpChild.children.size() - 1);
-						parent.keys.add(index - 1, tmpChild.keys.get(tmpChild.keys.size() - 1));
-						tmpChild.keys.remove(tmpChild.keys.size() - 1);
-						return this;
-					} else if (((ABTreeInnerNode)parent.children.get(index + 1)).children.size() > a) {
-						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);	// Der Teilknoten rechts vom aktuellen Knoten
-						ABTreeNode newRightChild = tmpChild.children.get(0);						// Das kleinste Kind im rechten Teilbaum
-						children.add(children.size() - 1, newRightChild);							// Ersetzt das aktuell größte Kind
-						keys.add(keys.size(), parent.keys.get(index));									// Schreibt das Element das bisher auf das größte Element im Baum verweist ans Ende der Liste
-						tmpChild.children.remove(0);												// Entfernt das Kind aus dem rechten Teilbaum, das wir klauen
-						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
-						tmpChild.keys.remove(0);													// Und entfernt es aus dem rechten Knoten
-						return this;
-					} else {	// Merge mit Nachbar
-						if (index == parent.children.size() - 1) {									// keine rechten Nachbarn
-							
-						} else {																	// Linken und rechten Nachbarn
-							
-						}
+				if (index == 0) {																// Kein linker Nachbar
+					if (parent.children.get(index + 1).canSteal()) {							// Kann vom rechten Nachbarn klauen
+						stealLeftNeighbor();
+					} else {																	// Kann nicht klauen
+						mergeNodes();
+					}
+				} else if (index == parent.children.size() - 1) {								// Kein rechter Nachar
+					if (parent.children.get(index - 1).canSteal()) {							// Kann vom linken Nacharn klauen
+						stealRightNeighbor();
+					} else {																	// Kann nicht klauen
+						mergeNodes();
 					}
 				} else {
-					if (index == 0 && ((ABTreeInnerNode)parent.children.get(index + 1)).children.size() > a) {
-						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);	// Der Teilknoten rechts vom aktuellen Knoten
-						ABTreeNode newRightChild = tmpChild.children.get(0);							// Das kleinste Kind im rechten Teilbaum
-						children.add(children.size() - 1, newRightChild);								// Ersetzt das aktuell größte Kind
-						keys.add(keys.size(), parent.keys.get(index));									// Schreibt das Element das bisher auf das größte Element im Baum verweist ans Ende der Liste
-						tmpChild.children.remove(0);													// Entfernt das Kind aus dem rechten Teilbaum, das wir klauen
-						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
-						tmpChild.keys.remove(0);														// Und entfernt es aus dem rechten Knoten
-						return this;
-					} else {		// Merge mit rechtem Nachbarn
-						
-						// Außerdem das entfernen der Wurzel, falls diese nicht mehr gebraucht wird.
+					if (parent.children.get(index - 1).canSteal()) {							// Kann vom linken Nachbarn klauen
+						stealLeftNeighbor();
+					} else if (parent.children.get(index + 1).canSteal()) {						// Kann vom rechten Nachbarn klauen
+						stealRightNeighbor();
+					} else {																	// Kann nicht klauen und muss mergen
+						mergeNodes();
 					}
 				}
-			} else if (parent == null && children.size() < a) {
-				if (children.get(0) instanceof ABTreeLeaf) {
-					return this;
-				} else {
-					
+			} else if (parent == null && children.size() < 2) {									// Wurzel
+				if (children.get(0) instanceof ABTreeLeaf) {									// Wenn wir die Wurzel sind ist die Invariante immer gegeben also auch, wenn wir weniger als a Kinder haben (die Blätter sind)
+					// Intentionally left Blank
+				} else {																		// Wenn die Kinder keine Blätter sind und wir durch die Bedingung oben nur noch ein Kind haben, dann mergen wir
+					mergeNodes();
 				}
 			}
-			return this;
+		}
+		
+		private void stealLeftNeighbor() {
+			int index = parent.children.indexOf(this);											// Der Index, an dem der aktuelle Knoten im Elternknoten ist
+			ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index - 1);		// Das linke Kind vom aktuellen Knoten aus gesehen
+			ABTreeNode newLeftChild = tmpChild.children.get(tmpChild.children.size()-1);		// Das größte Kind vom rechten Nachbarn
+			children.add(0, newLeftChild);														// Wird das aktuell kleinste Kind
+			children.get(0).parent = this;														// Setzten die Referenz auf das Elternobjekt auf den aktuellen Knoten
+			keys.add(0, parent.keys.get(index - 1));											// Hinzufügen des Keys für das jetzt neue kleinste Kind
+			tmpChild.children.remove(tmpChild.children.size() - 1);								// Entfernen der Referenz auf das ehemalige größte Kind im linken Nachbarn
+			parent.keys.add(index - 1, tmpChild.keys.get(tmpChild.keys.size() - 1));			// Hinzufügen der neuen Refernz auf das jetzt größte Element im linken Nachbarn
+			tmpChild.keys.remove(tmpChild.keys.size() - 1);										// Entfernen des Schlüssels aus den Keys des linken Nachbarn
+		}
+		
+		private void stealRightNeighbor() {
+			int index = parent.children.indexOf(this);
+			ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);		// Der Teilknoten rechts vom aktuellen Knoten
+			ABTreeNode newRightChild = tmpChild.children.get(0);								// Das kleinste Kind im rechten Teilbaum
+			children.add(children.size() - 1, newRightChild);									// Ersetzt das aktuell größte Kind
+			children.get(children.size()-1).parent = this;										// Setzen der Referenz auf den aktuellen Knoten
+			keys.add(keys.size(), parent.keys.get(index));										// Schreibt das Element das bisher auf das größte Element im Baum verweist ans Ende der Liste
+			tmpChild.children.remove(0);														// Entfernt das Kind aus dem rechten Teilbaum, das wir klauen
+			parent.keys.set(index, tmpChild.keys.get(0));										// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
+			tmpChild.keys.remove(0);															// Und entfernt es aus dem rechten Knoten
+		}
+		
+		private void mergeNodes() {
+			int index = parent.children.indexOf(this);
+			
 		}
 
 		@Override
