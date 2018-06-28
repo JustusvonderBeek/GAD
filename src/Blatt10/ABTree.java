@@ -255,7 +255,7 @@ public class ABTree {
 		private ABTreeInnerNode correctRemove() {
 			if (parent != null && children.size() < a) {
 				System.out.println("Parent nicht null");
-				int index = ((ABTreeInnerNode)parent).children.indexOf(this);
+				int index = parent.children.indexOf(this);
 				if (index > 0 && index < parent.children.size()) {				// Merge von links oder rechts
 					if (((ABTreeInnerNode)parent.children.get(index - 1)).children.size() > a) {
 						ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index - 1);
@@ -275,6 +275,12 @@ public class ABTree {
 						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
 						tmpChild.keys.remove(0);													// Und entfernt es aus dem rechten Knoten
 						return this;
+					} else {	// Merge mit Nachbar
+						if (index == parent.children.size() - 1) {									// keine rechten Nachbarn
+							
+						} else {																	// Linken und rechten Nachbarn
+							
+						}
 					}
 				} else {
 					if (index == 0 && ((ABTreeInnerNode)parent.children.get(index + 1)).children.size() > a) {
@@ -286,12 +292,17 @@ public class ABTree {
 						parent.keys.set(index, tmpChild.keys.get(0));									// Schreibt das kleinste Element aus der rechten Liste in die Keys vom Vaterknoten
 						tmpChild.keys.remove(0);														// Und entfernt es aus dem rechten Knoten
 						return this;
-					} else {
+					} else {		// Merge mit rechtem Nachbarn
 						
+						// Außerdem das entfernen der Wurzel, falls diese nicht mehr gebraucht wird.
 					}
 				}
-			} else if (parent == null && children.size() < 2) {
-				System.out.println("Leaf nicht gesetzt");
+			} else if (parent == null && children.size() < a) {
+				if (children.get(0) instanceof ABTreeLeaf) {
+					return this;
+				} else {
+					
+				}
 			}
 			return this;
 		}
