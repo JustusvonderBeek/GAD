@@ -313,6 +313,14 @@ public class ABTree {
 			int index = parent.children.indexOf(this);
 			
 		}
+		
+		private void mergeLeft() {
+			
+		}
+		
+		private void mergeRight() {
+			
+		}
 
 		@Override
 		public int height() {
