@@ -230,7 +230,21 @@ public class ABTree {
 				while (i < keys.size() && keys.get(i) < key) {
 					i++;
 				}
-				if (keys.get(i) == key) {
+				if (i >= keys.size()) {
+					// TODO
+					children.remove(keys.size());
+					ABTreeInnerNode tmp = parent;
+					while(true) {
+						int index = tmp.children.indexOf(this);
+						if (tmp.keys.get(parent.children.indexOf(this)) == key) {
+							tmp.keys.set(index, keys.get(keys.size() - 1));
+							break;
+						}
+						tmp = tmp.parent;
+					}
+					correctRemove();
+					return true;
+				} else if (keys.get(i) == key) {
 					System.out.println("Removed " + key);
 					keys.remove(i);
 					children.remove(i);
@@ -310,16 +324,44 @@ public class ABTree {
 		}
 		
 		private void mergeNodes() {
-			int index = parent.children.indexOf(this);
-			
-		}
-		
-		private void mergeLeft() {
-			
+			if (parent != null) {
+				int index = parent.children.indexOf(this);
+				if (index == 0) {
+					mergeRight();
+				} else {
+					mergeLeft();
+				}
+			} else {
+				if (children.get(0) instanceof ABTreeLeaf) {
+					
+				} else {
+					// TODO
+				}
+			}
 		}
 		
 		private void mergeRight() {
-			
+			int index = parent.children.indexOf(this);
+			ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index + 1);	// Rechtes Kind
+			for (int i = 0; i < keys.size(); i++) {
+				children.get(i).parent = tmpChild;
+				tmpChild.keys.add(i, keys.get(i));
+				tmpChild.children.add(i, children.get(i));
+			}
+			parent.children.remove(index);
+			parent.keys.remove(index);
+		}
+		
+		private void mergeLeft() {
+			int index = parent.children.indexOf(this);
+			ABTreeInnerNode tmpChild = (ABTreeInnerNode) parent.children.get(index - 1);	// Links Kind
+			for (int i = 0; i < keys.size(); i++) {
+				children.get(i).parent = tmpChild;
+				tmpChild.keys.add(keys.get(i));
+				tmpChild.children.add(children.get(i));
+			}
+			parent.children.remove(index);
+			parent.keys.remove(index);
 		}
 
 		@Override

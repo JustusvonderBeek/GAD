@@ -59,7 +59,10 @@ public class TestingAB {
 		System.out.println(tree.dot());
 		tree.remove(10);
 		System.out.println(tree.dot());
-		tree.remove(80);
+		tree.remove(6);
+		System.out.println(tree.dot());
+		System.err.println(tree.validAB());
+		tree.remove(3);
 		System.out.println(tree.dot());
 	}
 	
