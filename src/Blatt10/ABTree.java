@@ -1,5 +1,6 @@
 package Blatt10;
 
+
 import java.util.ArrayList;
 
 /**
@@ -133,11 +134,11 @@ public class ABTree {
 					ABTreeLeaf insert = new ABTreeLeaf();
 					insert.parent = this;
 					children.add(insert);
-					System.out.println("Inserted " + key);
+//					System.out.println("Inserted " + key);
 				} else {
 					keys.add(i, key);
 					children.add(i, new ABTreeLeaf());
-					System.out.println("Inserted " + key);
+//					System.out.println("Inserted " + key);
 				}
 				parent = correctInsertion();
 			} else {
@@ -221,6 +222,9 @@ public class ABTree {
 			while (i < keys.size() && keys.get(i) < key) {
 				i++;
 			}
+			if (i < keys.size() && keys.get(i) == key) {
+				return true;
+			}
 			return children.get(i).find(key);
 		}
 
@@ -230,22 +234,18 @@ public class ABTree {
 				while (i < keys.size() && keys.get(i) < key) {
 					i++;
 				}
-				if (i >= keys.size()) {
-					// TODO
-					children.remove(keys.size());
-					ABTreeInnerNode tmp = parent;
-					while(true) {
-						int index = tmp.children.indexOf(this);
-						if (tmp.keys.get(parent.children.indexOf(this)) == key) {
-							tmp.keys.set(index, keys.get(keys.size() - 1));
-							break;
-						}
-						tmp = tmp.parent;
+				if (i >= keys.size()) {															// Wenn das Kind durch einen Key in einem oberen Knoten bestimmt wird
+					children.remove(i);
+					ABTreeInnerNode tmp = searchNode(key);
+					int index = 0;
+					while (index < tmp.keys.size() && tmp.keys.get(index) < key) {
+						index++;
 					}
+					tmp.keys.set(index, keys.get(keys.size() - 1));
 					correctRemove();
 					return true;
 				} else if (keys.get(i) == key) {
-					System.out.println("Removed " + key);
+//					System.out.println("Removed " + key);
 					keys.remove(i);
 					children.remove(i);
 					correctRemove();
@@ -335,7 +335,7 @@ public class ABTree {
 				if (children.get(0) instanceof ABTreeLeaf) {
 					
 				} else {
-					// TODO
+					this.parent = (ABTreeInnerNode) this.children.get(0);
 				}
 			}
 		}
@@ -362,6 +362,19 @@ public class ABTree {
 			}
 			parent.children.remove(index);
 			parent.keys.remove(index);
+		}
+		
+		private ABTreeInnerNode searchNode (int key) {
+			int index = 0;
+			while (index < keys.size() && keys.get(index) < key) {
+				index++;
+			}
+			if (index == keys.size()) {
+				return this.parent.searchNode(key);
+			} else if (keys.get(index) == key) {
+				return this;
+			}
+			return null;
 		}
 
 		@Override
@@ -401,14 +414,14 @@ public class ABTree {
 						if (keys.get(i) >= tmpKey) {
 							tmpKey = keys.get(i);
 						} else {
-							System.out.println("Falsche Keyreihenfolge");
+//							System.out.println("Falsche Keyreihenfolge");
 							return false;
 						}
 					}
 					int tmpHeight = children.get(0).height();
 					for (int i = 1; i < children.size(); i++) { // Testet ob die Teilbäume alle die gleiche Höhe haben
 						if (children.get(i).height() != tmpHeight) {
-							System.out.println("Unteschiedliche Höhe");
+//							System.out.println("Unteschiedliche Höhe");
 							return false;
 						}
 					}
@@ -417,20 +430,20 @@ public class ABTree {
 							if (keys.get(i) >= children.get(i).max() && keys.get(i) < children.get(i + 1).min()) {
 								// Intentionally left blank
 							} else {
-								System.out.println("Teilbäume enhalten falsche Elemente");
+//								System.out.println("Teilbäume enhalten falsche Elemente");
 								return false;
 							}
 						}
 					}
 					for (int i = 0; i < children.size(); i++) { // Prüft für alle Unterbäume dasselbe
 						if (!children.get(i).validAB(true)) {
-							System.out.println("Teilbäume sind nicht korrekt");
+//							System.out.println("Teilbäume sind nicht korrekt");
 							return false;
 						}
 					}
 					return true;
 				}
-				System.out.println("Falsche Children Size " + children.size() + " " + a);
+//				System.out.println("Falsche Children Size " + children.size() + " " + a);
 				return false;
 			}
 			return false;
